@@ -1,20 +1,50 @@
-import '@logseq/libs';
+import React from 'react';
+import './App.css';
 import axios from 'axios';
 import utils from './utils';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
 
-const main = () => {
-  console.log('Readwise plugin loaded');
-  ReactDOM.render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>,
-    document.getElementById('app')
-  );
-  logseq.provideModel({
-    async getBooks() {
+export default class App extends React.Component {
+  state = {
+    noOfBooks: '',
+    noOfHighlights: '',
+  };
+
+  componentDidMount = async () => {
+    const booklist = await axios({
+      method: 'get',
+      url: 'https://readwise.io/api/v2/books/',
+      headers: {
+        Authorization: `Token udhQHKj5MZ2bsLzKKXd2NT0VE2NTDkHZHS0bXfYCvfAn8KI8re`,
+      },
+    });
+
+    this.setState({
+      noOfBooks: booklist.data['count'],
+    });
+
+    const highlightsList = await axios({
+      method: 'get',
+      url: 'https://readwise.io/api/v2/highlights/',
+      headers: {
+        Authorization: `Token udhQHKj5MZ2bsLzKKXd2NT0VE2NTDkHZHS0bXfYCvfAn8KI8re`,
+      },
+    });
+    this.setState({
+      noOfHighlights: highlightsList.data['count'],
+    });
+  };
+
+  hide = () => {
+    logseq.hideMainUI();
+  };
+
+  moveBar = async () => {
+    let i = 0;
+    if (i == 0) {
+      i = 1;
+      var elem = document.getElementById('myBar');
+      var width = 1;
+
       ////////////////////////////////////////////
       ///// STEP 1: CREATE TABLE OF CONTENTS /////
       ////////////////////////////////////////////
@@ -41,8 +71,8 @@ const main = () => {
       // Map list of books into logseq compatible array
       const booklistArr = booklist.data.results.map((b) => ({
         content: `[[${b.title}]]
-        author:: [[${b.author}]]
-        `,
+            author:: [[${b.author}]]
+            `,
       }));
 
       // Create Title for Table of Contents
@@ -87,6 +117,10 @@ const main = () => {
         logseq.App.pushState('page', { name: b.title });
 
         console.log(`Updating ${b.title}`);
+
+        let interval = 100 / latestBookList.length;
+        width = width + interval;
+        elem.style.width = width + '%';
 
         // Get highlights for each book
         let response = await axios({
@@ -165,11 +199,11 @@ const main = () => {
         // Get highlights array
         const highlightsArr = response.data.results.map((h) => ({
           content: `${h.text}
-            location:: [${h.location}](kindle://book?action=open&asin=${
+                location:: [${h.location}](kindle://book?action=open&asin=${
             b.asin
           }&location=${h.location})
-            on:: [[${utils.getDateForPage(new Date(h.highlighted_at))}]]
-            `,
+                on:: [[${utils.getDateForPage(new Date(h.highlighted_at))}]]
+                `,
         }));
 
         await logseq.Editor.insertBatchBlock(
@@ -183,11 +217,11 @@ const main = () => {
         await logseq.Editor.updateBlock(
           headerBlock.uuid,
           `retrieved:: ${utils.blockTitle()}
-          full-title:: [[${b.title}]]
-          author:: [[${b.author}]]
-          category:: [[${b.category}]]
-          source:: [[${b.source}]]
-          `
+              full-title:: [[${b.title}]]
+              author:: [[${b.author}]]
+              category:: [[${b.category}]]
+              source:: [[${b.source}]]
+              `
         );
       }
 
@@ -196,30 +230,24 @@ const main = () => {
       // logseq.updateSettings({
       //   latestRetrieved: booklist.data.results[0].updated,
       // });
-    },
-  });
-
-  // Create UI for inserting env variables in settings
-  const createModel = () => {
-    return {
-      show() {
-        logseq.showMainUI();
-      },
-    };
+    }
   };
 
-  logseq.provideModel(createModel());
-
-  // Register UI
-  logseq.App.registerUIItem('toolbar', {
-    key: 'logseq-todoist-plugin',
-    template: `
-        <a data-on-click="show"
-          class="button">
-          <i class="ti ti-book"></i>
-        </a>
-  `,
-  });
-};
-
-logseq.ready(main).catch(console.error);
+  render() {
+    return (
+      <React.Fragment>
+        <div id="wrapper">
+          <div id="load-readwise">
+            <h1>No. of books: {this.state.noOfBooks}</h1>
+            <h1>No. of highlights: {this.state.noOfHighlights}</h1>
+            <div id="myProgress">
+              <div id="myBar"></div>
+            </div>
+            <button onClick={this.hide}>Exit w/o Saving</button>
+            <button onClick={this.moveBar}>Sync Readwise</button>
+          </div>
+        </div>
+      </React.Fragment>
+    );
+  }
+}

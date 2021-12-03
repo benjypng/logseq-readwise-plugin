@@ -22,7 +22,7 @@ const blockTitle = () => {
     .substring(12, 17)}`;
 };
 
-const pageName = 'Readwise Books';
+const pageName = 'Readwise TOC';
 
 const clearPage = async (arr) => {
   for (let i of arr) {
