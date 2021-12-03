@@ -30,4 +30,8 @@ const clearPage = async (arr) => {
   }
 };
 
-export default { getDateForPage, blockTitle, pageName, clearPage };
+const sleep = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+export default { getDateForPage, blockTitle, pageName, clearPage, sleep };

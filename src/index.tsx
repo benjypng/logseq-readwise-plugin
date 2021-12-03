@@ -82,7 +82,7 @@ const main = () => {
         console.log(`Updating ${b.title}`);
 
         // Get highlights for each book
-        const response = await axios({
+        let response = await axios({
           method: 'get',
           url: 'https://readwise.io/api/v2/highlights/',
           headers: {
@@ -93,7 +93,28 @@ const main = () => {
           },
         });
 
-        //
+        // Insert check for too many highlights
+        let retryAfter;
+        if (response.status === 429) {
+          retryAfter = response.headers['Retry-After'];
+          await utils.sleep(retryAfter + 1000);
+          response = await axios({
+            method: 'get',
+            url: 'https://readwise.io/api/v2/highlights/',
+            headers: {
+              Authorization: `Token udhQHKj5MZ2bsLzKKXd2NT0VE2NTDkHZHS0bXfYCvfAn8KI8re`,
+            },
+            params: {
+              book_id: b.id,
+            },
+          });
+        }
+
+        if (!response.data) {
+          logseq.App.showMsg('Fatal error');
+          break;
+        }
+
         const currPage = await logseq.Editor.getCurrentPage();
         const pageBlockTree = await logseq.Editor.getCurrentPageBlocksTree();
 
