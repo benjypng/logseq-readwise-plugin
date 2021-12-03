@@ -1,7 +1,6 @@
 body,
 html {
-  font-family: Lucida Sans, Lucida Sans Regular, Lucida Grande,
-    Lucida Sans Unicode, Geneva, Verdana, sans-serif;
+  font-family: Arial, Verdana, sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -23,12 +22,12 @@ html {
   top: 3em;
   background-color: #ccc;
   border-radius: 1em;
-  height: 200px;
 }
 
 #myProgress {
   width: 100%;
   background-color: grey;
+  margin-bottom: 1em;
 }
 
 #myBar {

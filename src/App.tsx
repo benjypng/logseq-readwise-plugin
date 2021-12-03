@@ -7,6 +7,8 @@ export default class App extends React.Component {
   state = {
     noOfBooks: '',
     noOfHighlights: '',
+    noOfNewHighlights: '',
+    syncing: false,
   };
 
   componentDidMount = async () => {
@@ -32,6 +34,15 @@ export default class App extends React.Component {
     this.setState({
       noOfHighlights: highlightsList.data['count'],
     });
+
+    // Filter out books where there are highlights newer than the last retrieved date
+    const latestBookList = booklist.data.results.filter(
+      (b) => new Date(b.updated) > new Date(logseq.settings['latestRetrieved'])
+    );
+
+    this.setState({
+      noOfNewHighlights: latestBookList.length,
+    });
   };
 
   hide = () => {
@@ -39,6 +50,10 @@ export default class App extends React.Component {
   };
 
   moveBar = async () => {
+    this.setState({
+      syncing: true,
+    });
+
     let i = 0;
     if (i == 0) {
       i = 1;
@@ -233,18 +248,33 @@ export default class App extends React.Component {
     }
   };
 
+  terminate = () => {
+    window.location.reload();
+    logseq.hideMainUI();
+  };
+
   render() {
     return (
       <React.Fragment>
         <div id="wrapper">
           <div id="load-readwise">
-            <h1>No. of books: {this.state.noOfBooks}</h1>
-            <h1>No. of highlights: {this.state.noOfHighlights}</h1>
+            <h3>Total no. of books: {this.state.noOfBooks}</h3>
+            <h3>Total no. of highlights: {this.state.noOfHighlights}</h3>
+            <h3>No. of highlights to sync: {this.state.noOfNewHighlights}</h3>
+            <p>
+              Please note that synchronising more than 20 highlights can take a
+              longer time.
+            </p>
             <div id="myProgress">
               <div id="myBar"></div>
             </div>
-            <button onClick={this.hide}>Exit w/o Saving</button>
-            <button onClick={this.moveBar}>Sync Readwise</button>
+            {!this.state.syncing && <button onClick={this.hide}>Exit</button>}
+            {!this.state.syncing && (
+              <button onClick={this.moveBar}>Sync Readwise</button>
+            )}
+            {this.state.syncing && (
+              <button onClick={this.terminate}>Stop Syncing</button>
+            )}
           </div>
         </div>
       </React.Fragment>
