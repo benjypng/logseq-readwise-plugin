@@ -1,0 +1,37 @@
+{
+  "name": "logseq-readwise-tmp-plugin",
+  "version": "0.0.1",
+  "author": "hkgnp",
+  "description": "",
+  "logseq": {
+    "id": "logseq-readwise-tmp-plugin",
+    "title": "logseq-readwise-tmp-plugin"
+  },
+  "main": "dist/index.html",
+  "targets": {
+    "main": false
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "parcel src/index.html",
+    "build": "parcel build --no-source-maps src/index.html --public-url ./"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@logseq/libs": "latest",
+    "axios": "^0.24.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-use": "^17.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "16.11.6",
+    "@types/react": "17.0.34",
+    "@types/react-dom": "17.0.11",
+    "@typescript-eslint/eslint-plugin": "5.3.0",
+    "@typescript-eslint/parser": "5.3.0",
+    "eslint": "^8.1.0",
+    "parcel": "^2.0.0",
+    "typescript": "^4.4.4"
+  }
+}
