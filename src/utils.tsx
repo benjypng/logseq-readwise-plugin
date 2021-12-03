@@ -17,11 +17,17 @@ const getDateForPage = (d) => {
 
 const blockTitle = () => {
   const currDate = new Date();
-  return `[[${getDateForPage(currDate)}]] at ${currDate
+  return `[[${getDateForPage(currDate)}]], ${currDate
     .toLocaleString()
     .substring(12, 17)}`;
 };
 
 const pageName = 'Readwise Books';
 
-export default { getDateForPage, blockTitle, pageName };
+const clearPage = async (arr) => {
+  for (let i of arr) {
+    await logseq.Editor.removeBlock(i.uuid);
+  }
+};
+
+export default { getDateForPage, blockTitle, pageName, clearPage };

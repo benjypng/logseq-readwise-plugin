@@ -1,21 +1,10 @@
 import '@logseq/libs';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
 import axios from 'axios';
 import './utils';
 import utils from './utils';
 
 const main = () => {
   console.log('Readwise plugin loaded');
-
-  // For UI to insert settings
-  ReactDOM.render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>,
-    document.getElementById('app')
-  );
 
   logseq.provideModel({
     async getBooks() {
@@ -56,13 +45,11 @@ const main = () => {
       const pageBlockTree = await logseq.Editor.getCurrentPageBlocksTree();
 
       // Check if page is populated. If it is, clear page and re-insert the blocks
-      let targetBlock;
       if (pageBlockTree.length > 0) {
-        targetBlock = pageBlockTree[0];
-        await logseq.Editor.removeBlock(targetBlock.uuid);
+        utils.clearPage(pageBlockTree);
       }
 
-      targetBlock = await logseq.Editor.insertBlock(
+      const targetBlock = await logseq.Editor.insertBlock(
         currPage.name,
         'Fetching books ...',
         {
@@ -71,28 +58,30 @@ const main = () => {
       );
 
       await logseq.Editor.insertBatchBlock(targetBlock.uuid, booklistArr, {
-        sibling: false,
+        sibling: true,
       });
 
       await logseq.Editor.updateBlock(
         targetBlock.uuid,
-        `Retrieved: ${utils.blockTitle()}`
+        `retrieved:: ${utils.blockTitle()}`
       );
 
       ///////////////////////////////////////////////////////////
       ///// STEP 2: GO TO EACH PAGE AND POPULATE HIGHLIGHTS /////
       ///////////////////////////////////////////////////////////
 
-      // Go to each page that has a latest updated dateand populate each page
+      // Filter out books where there are highlights newer than the last retrieved date
       const latestBookList = booklist.data.results.filter(
         (b) => new Date(b.updated) > new Date(latestRetrieved)
       );
 
+      // Go to each page that has a latest updated date and populate each page
       for (let b of latestBookList) {
         logseq.App.pushState('page', { name: b.title });
 
         console.log(`Updating ${b.title}`);
 
+        // Get highlights for each book
         const response = await axios({
           method: 'get',
           url: 'https://readwise.io/api/v2/highlights/',
@@ -104,32 +93,48 @@ const main = () => {
           },
         });
 
+        //
         const currPage = await logseq.Editor.getCurrentPage();
         const pageBlockTree = await logseq.Editor.getCurrentPageBlocksTree();
 
-        let targetBlock;
-
+        // Check if page is populated. If it is, clear page and re-insert the blocks
         if (pageBlockTree.length > 0) {
-          targetBlock = pageBlockTree[0];
-          await logseq.Editor.removeBlock(targetBlock.uuid);
+          utils.clearPage(pageBlockTree);
         }
 
-        targetBlock = await logseq.Editor.insertBlock(
+        // Insert placeholder for retrieved date
+        const headerBlock = await logseq.Editor.insertBlock(
           currPage.name,
-          'Fetching highlights ...',
+          'Fetching highlights...',
           {
             isPageBlock: true,
           }
         );
 
+        // Insert image
+        const imageBlock = await logseq.Editor.insertBlock(
+          headerBlock.uuid,
+          `![book_image](${b.cover_image_url})`,
+          { sibling: true }
+        );
+
+        // Check for if there are no highlights in that partcular book
         if (response.data.results.length === 0) {
           await logseq.Editor.updateBlock(
-            targetBlock.uuid,
+            headerBlock.uuid,
             `As of ${utils.blockTitle()}, there are no highlights in this book.`
           );
           continue;
         }
 
+        // Insert highlights block
+        const highlightsBlock = await logseq.Editor.insertBlock(
+          imageBlock.uuid,
+          `[[Readwise Highlights]]`,
+          { sibling: true }
+        );
+
+        // Get highlights array
         const highlightsArr = response.data.results.map((h) => ({
           content: `${h.text}
             location:: [${h.location}](kindle://book?action=open&asin=${
@@ -139,34 +144,32 @@ const main = () => {
             `,
         }));
 
-        await logseq.Editor.insertBatchBlock(targetBlock.uuid, highlightsArr, {
-          sibling: false,
-        });
+        await logseq.Editor.insertBatchBlock(
+          highlightsBlock.uuid,
+          highlightsArr,
+          {
+            sibling: false,
+          }
+        );
 
         await logseq.Editor.updateBlock(
-          targetBlock.uuid,
-          `Retrieved: ${utils.blockTitle()}`
+          headerBlock.uuid,
+          `retrieved:: ${utils.blockTitle()}
+          full-title:: [[${b.title}]]
+          author:: [[${b.author}]]
+          category:: [[${b.category}]]
+          source:: [[${b.source}]]
+          `
         );
       }
 
       logseq.App.showMsg('Highlights imported!');
 
-      logseq.updateSettings({
-        latestRetrieved: booklist.data.results[0].updated,
-      });
+      // logseq.updateSettings({
+      //   latestRetrieved: booklist.data.results[0].updated,
+      // });
     },
   });
-
-  // Create UI for inserting env variables in settings
-  const createModel = () => {
-    return {
-      show() {
-        logseq.showMainUI();
-      },
-    };
-  };
-
-  logseq.provideModel(createModel());
 
   // Register UI
   logseq.App.registerUIItem('toolbar', {
