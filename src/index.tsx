@@ -32,18 +32,15 @@ const main = () => {
         },
       });
 
+      const latestRetrieved = logseq.settings['latestRetrieved'];
+
       // Check against retrieved date
       if (
-        new Date(booklist.data.results[0].updated) <=
-        new Date(logseq.settings?.lastRetrieved)
+        new Date(booklist.data.results[0].updated) <= new Date(latestRetrieved)
       ) {
         logseq.App.showMsg(`There are no new highlights!`);
         return;
       }
-
-      logseq.updateSettings({
-        lastRetrieved: booklist.data.results[0].updated,
-      });
 
       // Map list of books into logseq compatible array
       const booklistArr = booklist.data.results.map((b) => ({
@@ -86,11 +83,15 @@ const main = () => {
       ///// STEP 2: GO TO EACH PAGE AND POPULATE HIGHLIGHTS /////
       ///////////////////////////////////////////////////////////
 
-      // Go to each page and populate each page
-      for (let b = 0; b < 3; b++) {
-        logseq.App.pushState('page', { name: booklist.data.results[b].title });
+      // Go to each page that has a latest updated dateand populate each page
+      const latestBookList = booklist.data.results.filter(
+        (b) => new Date(b.updated) > new Date(latestRetrieved)
+      );
 
-        console.log(`Updating ${booklist.data.results[b].title}`);
+      for (let b of latestBookList) {
+        logseq.App.pushState('page', { name: b.title });
+
+        console.log(`Updating ${b.title}`);
 
         const response = await axios({
           method: 'get',
@@ -99,7 +100,7 @@ const main = () => {
             Authorization: `Token udhQHKj5MZ2bsLzKKXd2NT0VE2NTDkHZHS0bXfYCvfAn8KI8re`,
           },
           params: {
-            book_id: booklist.data.results[b].id,
+            book_id: b.id,
           },
         });
 
@@ -132,7 +133,7 @@ const main = () => {
         const highlightsArr = response.data.results.map((h) => ({
           content: `${h.text}
             location:: [${h.location}](kindle://book?action=open&asin=${
-            booklist.data.results[b].asin
+            b.asin
           }&location=${h.location})
             on:: [[${utils.getDateForPage(new Date(h.highlighted_at))}]]
             `,
@@ -149,6 +150,10 @@ const main = () => {
       }
 
       logseq.App.showMsg('Highlights imported!');
+
+      logseq.updateSettings({
+        latestRetrieved: booklist.data.results[0].updated,
+      });
     },
   });
 
