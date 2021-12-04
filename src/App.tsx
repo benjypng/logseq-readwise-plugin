@@ -72,7 +72,7 @@ export default class App extends React.Component {
     let i = 0;
     if (i == 0) {
       i = 1;
-      var elem = document.getElementById('myBar');
+      var elem = document.getElementById('myProgress');
       var width = 1;
 
       ////////////////////////////////////////////
@@ -142,8 +142,8 @@ export default class App extends React.Component {
               Please note that synchronising more than 20 highlights can take a
               longer time.
             </p>
-            <div id="myProgress">
-              <div id="myBar"></div>
+            <div id="progressBar">
+              <div id="myProgress"></div>
             </div>
             {!this.state.sync && <button onClick={this.hide}>Exit</button>}
             {this.state.loaded && !this.state.sync && (

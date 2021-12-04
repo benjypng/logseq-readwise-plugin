@@ -24,13 +24,13 @@ html {
   border-radius: 1em;
 }
 
-#myProgress {
+#progressBar {
   width: 100%;
   background-color: grey;
   margin-bottom: 1em;
 }
 
-#myBar {
+#myProgress {
   width: 1%;
   height: 30px;
   background-color: green;
