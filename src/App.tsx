@@ -135,12 +135,12 @@ export default class App extends React.Component {
               />
               <button onClick={this.saveToken}>Save Token</button>
             </p>
-            <h3>Total no. of books: {this.state.noOfBooks}</h3>
+            <h3>Total no. of sources: {this.state.noOfBooks}</h3>
             <h3>Total no. of highlights: {this.state.noOfHighlights}</h3>
-            <h3>No. of highlights to sync: {this.state.noOfNewHighlights}</h3>
+            <h3>No. of new sources to sync: {this.state.noOfNewHighlights}</h3>
             <p>
-              Please note that synchronising more than 20 highlights can take a
-              longer time.
+              Please note that synchronising more than 20 sources can take a
+              longer time due to Readwise's API limits'.
             </p>
             <div id="progressBar">
               <div id="myProgress"></div>
