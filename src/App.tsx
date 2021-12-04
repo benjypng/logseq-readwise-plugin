@@ -5,7 +5,8 @@ import handleHighlights from './handle-highlights';
 
 export default class App extends React.Component {
   state = {
-    token: '',
+    token: logseq.settings['token'],
+    latestRetrieved: logseq.settings['latestRetrieved'],
     noOfBooks: '',
     noOfHighlights: '',
     noOfNewHighlights: '',
@@ -16,7 +17,7 @@ export default class App extends React.Component {
   };
 
   componentDidMount = async () => {
-    console.log(logseq.settings['latestRetrieved']);
+    console.log(this.state.latestRetrieved);
 
     const booklist = await axios({
       method: 'get',
@@ -79,8 +80,7 @@ export default class App extends React.Component {
       ///// STEP 1: CREATE TABLE OF CONTENTS /////
       ////////////////////////////////////////////
 
-      const latestRetrieved = logseq.settings['latestRetrieved'];
-      const { booklist, latestBookList } = this.state;
+      const { booklist, latestBookList, latestRetrieved } = this.state;
 
       handleHighlights.createReadwiseToc(latestRetrieved, booklist);
 
@@ -120,6 +120,11 @@ export default class App extends React.Component {
     logseq.updateSettings({ token: this.state.token });
   };
 
+  syncOnlyTOC = () => {
+    const { latestRetrieved, booklist } = this.state;
+    handleHighlights.createReadwiseToc(latestRetrieved, booklist);
+  };
+
   render() {
     return (
       <React.Fragment>
@@ -140,15 +145,24 @@ export default class App extends React.Component {
             <h3>No. of new sources to sync: {this.state.noOfNewHighlights}</h3>
             <p>
               Please note that synchronising more than 20 sources can take a
-              longer time due to Readwise's API limits'.
+              longer time due to Readwise's API limits.
             </p>
             <div id="progressBar">
               <div id="myProgress"></div>
             </div>
-            {!this.state.sync && <button onClick={this.hide}>Exit</button>}
+
+            {/* Exit button that always shows */}
+            <button onClick={this.hide}>Exit</button>
+
+            {/* Only show when setState has completed */}
             {this.state.loaded && !this.state.sync && (
-              <button onClick={this.syncReadwise}>Sync Readwise</button>
+              <React.Fragment>
+                <button onClick={this.syncReadwise}>Sync Readwise</button>
+                <button onClick={this.syncOnlyTOC}>Sync only TOC</button>
+              </React.Fragment>
             )}
+
+            {/* Only show when Syncing */}
             {this.state.sync && (
               <button onClick={this.terminate}>Stop Syncing</button>
             )}
