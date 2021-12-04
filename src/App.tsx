@@ -157,7 +157,7 @@ export default class App extends React.Component {
             {/* Only show when setState has completed */}
             {this.state.loaded && !this.state.sync && (
               <React.Fragment>
-                <button onClick={this.syncReadwise}>Sync All Highlights</button>
+                <button onClick={this.syncReadwise}>Sync New Sources</button>
                 <button onClick={this.syncOnlyTOC}>Sync only TOC</button>
               </React.Fragment>
             )}
