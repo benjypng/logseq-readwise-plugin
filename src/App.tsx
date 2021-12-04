@@ -136,12 +136,23 @@ export default class App extends React.Component {
     this.loadFromReadwise();
   };
 
+  firstTime = () => {
+    logseq.updateSettings({ latestRetrieved: '1970-01-01T00:00:00Z' });
+  };
+
   render() {
     return (
       <div className="flex justify-center">
         <div className="absolute top-3 bg-indigo-900 rounded-lg p-3 w-100">
           {/* Close button */}
-          <div className="flex justify-end">
+          <div className="flex justify-between">
+            <button
+              onClick={this.firstTime}
+              type="button"
+              className="bg-indigo-900 rounded-md inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 mb-2"
+            >
+              Click here if using this plugin for the first time.
+            </button>
             <button
               onClick={this.hide}
               type="button"
@@ -219,6 +230,7 @@ export default class App extends React.Component {
             </div>
           </div>
 
+          {/* Synchronisation section */}
           <div className="bg-purple-500 text-white font-bold rounded-t px-4 py-2 mb-2">
             Please note that synchronising more than 20 sources can take a
             longer time due to Readwise's API limits.
