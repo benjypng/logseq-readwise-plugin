@@ -1,11 +1,11 @@
 {
-  "name": "logseq-readwise-tmp-plugin",
+  "name": "logseq-readwise-plugin",
   "version": "0.0.1",
   "author": "hkgnp",
   "description": "",
   "logseq": {
-    "id": "logseq-readwise-tmp-plugin",
-    "title": "logseq-readwise-tmp-plugin"
+    "id": "logseq-readwise-plugin",
+    "title": "logseq-readwise-plugin"
   },
   "main": "dist/index.html",
   "targets": {
