@@ -1,5 +1,7 @@
 # Overview
 
+![](/screenshots/sync.png)
+
 This is a simple Readwise plugin to:
 
 1. Creates a 'Table of Contents' from your sources
@@ -17,9 +19,10 @@ If you have multiple sources (e.g. books, tweets, instapaper) and thousands of h
 3. Unzip the file to where you normally store your unpacked plugins.
 4. In Logseq, load the unpacked plugin.
 5. Click on the icon in the plugins bar.
-6. Key in the token that you obtained in (1) and click `Save Token`.
-7. Review the number of sources and highlights that you have.
-8. Choose to either sync highlights or sync only the 'Table of Contents'.
+6. If you are using the plugin for the first time, do remember to click the button `Click here if you are using this plugin for the first time`.
+7. Key in the token that you obtained in (1) and click `Save Token`.
+8. Review the number of sources and highlights that you have.
+9. Choose to either sync highlights or sync only the 'Table of Contents'.
 
 # Future
 

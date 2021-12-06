@@ -2,8 +2,6 @@ import React from 'react';
 import './App.css';
 import axios from 'axios';
 import handleHighlights from './handle-highlights';
-const refreshIcon = require('./refresh.svg') as string;
-const exitIcon = require('./exit.svg') as string;
 
 export default class App extends React.Component {
   state = {
@@ -143,136 +141,138 @@ export default class App extends React.Component {
   render() {
     return (
       <div className="flex justify-center">
-        <div className="absolute top-3 bg-indigo-900 rounded-lg p-3 w-100">
-          {/* Close button */}
+        <div className="absolute top-3 bg-white rounded-lg p-3 w-100 border">
+          {/* First row */}
           <div className="flex justify-between">
             <button
               onClick={this.firstTime}
-              type="button"
-              className="bg-indigo-900 rounded-md inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 mb-2"
+              className="text-black border border-black px-2 mb-2 mr-2 mt-3 rounded-md text-left"
             >
-              Click here if using this plugin for the first time.
+              Click here if you are using this plugin for the first time
             </button>
-            <button
-              onClick={this.hide}
-              type="button"
-              className="bg-indigo-900 rounded-md inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 mb-2"
-            >
-              <img src={exitIcon} className="p-0 m-0" />
+            <button onClick={this.hide} className="z-50">
+              <svg
+                className="fill-current text-black"
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+              >
+                <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+              </svg>
             </button>
           </div>
 
+          <hr className="my-3" />
+
           {/* Token row */}
-          <div className="flex flex-row">
+          <div className="flex flex-row py-2">
             <input
-              className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
               type="text"
               name="token"
               value={this.state.token}
               onChange={this.handleInput}
+              className="border border-gray-200 hover:border-blue-500 w-60 px-3 py-1 focus:border-blue-500 focus:border-b-4"
             />
             <button
               onClick={this.saveToken}
-              className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded ml-3"
+              className="text-blue-500 font-bold pl-3"
             >
               Save Token
             </button>
           </div>
 
-          {/* Information row */}
-          <div className="bg-indigo-900 text-center py-2 lg:px-4">
-            <div
-              className="p-2 bg-indigo-800 items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex"
-              role="alert"
-            >
-              <span className="flex rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-3">
-                {this.state.noOfBooks}
-              </span>
-              <span className="font-semibold mr-2 text-left flex-auto">
-                Total number of sources
-              </span>
+          {/* Sources and highlights row */}
+          <div className="flex flex-start flex-col">
+            <div className="text-center">
+              <div className="p-2 bg-white items-center text-black flex">
+                <span className="flex rounded-full bg-white uppercase px-2 py-1 text-xs font-bold mr-3 border border-black">
+                  {this.state.noOfBooks}
+                </span>
+                <span className="font-semibold mr-2 text-left flex-auto">
+                  Total number of sources
+                </span>
+              </div>
             </div>
-          </div>
 
-          <div className="bg-indigo-900 text-center py-2 lg:px-4">
-            <div
-              className="p-2 bg-indigo-800 items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex"
-              role="alert"
-            >
-              <span className="flex rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-3">
-                {this.state.noOfHighlights}
-              </span>
-              <span className="font-semibold mr-2 text-left flex-auto">
-                Total number of highlights
-              </span>
+            <div className="text-center">
+              <div className="p-2 bg-white items-center text-black flex">
+                <span className="flex rounded-full bg-white uppercase px-2 py-1 text-xs font-bold mr-3 border border-black">
+                  {this.state.noOfHighlights}
+                </span>
+                <span className="font-semibold mr-2 text-left flex-auto">
+                  Total number of highlights
+                </span>
+              </div>
             </div>
-          </div>
 
-          <div className="bg-indigo-900 text-center py-2 lg:px-4">
-            <div
-              className="p-2 bg-indigo-800 items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex"
-              role="alert"
-            >
-              <span className="flex rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-3">
-                {this.state.noOfNewHighlights}
-              </span>
-              <span className="font-semibold mr-2 text-left flex-auto">
-                Number of new sources to sync
-              </span>
-              <span>
-                <button onClick={this.refreshSources} className="p-0 m-0">
-                  <img
-                    src={refreshIcon}
-                    className="p-0 m-0 hover:border-blue-500"
-                  />
-                </button>
-              </span>
-            </div>
-          </div>
-
-          {/* Synchronisation section */}
-          <div className="bg-purple-500 text-white font-bold rounded-t px-4 py-2 mb-2">
-            Please note that synchronising more than 20 sources can take a
-            longer time due to Readwise's API limits.
-          </div>
-          <div className="border border-t-0 border-purple-400 rounded-b bg-red-100 px-4 py-3 text-purple-700">
-            {/* Only show when setState has completed */}
-            {this.state.loaded && !this.state.sync && (
-              <React.Fragment>
-                <button
-                  onClick={this.syncReadwise}
-                  className="inline-flex items-center h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800 mr-3"
-                >
-                  Sync New Sources
-                </button>
-                <button
-                  onClick={this.syncOnlyTOC}
-                  className="inline-flex items-center h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800"
-                >
-                  Sync only Table of Contents
-                </button>
-              </React.Fragment>
-            )}
-
-            {/* Only show when Syncing */}
-            {this.state.sync && (
-              <button
-                onClick={this.terminate}
-                className="inline-flex items-center h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800"
-              >
-                Stop Syncing
-              </button>
-            )}
-
-            <div className="relative pt-1 mt-3">
-              <div className="overflow-hidden h-2 text-xs flex rounded bg-purple-200">
-                <div
-                  id="myProgress"
-                  className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-purple-500"
-                ></div>
+            <div className="text-center">
+              <div className="p-2 bg-white items-center text-black flex">
+                <span className="flex rounded-full bg-white uppercase px-2 py-1 text-xs font-bold mr-3 border border-black">
+                  {this.state.noOfNewHighlights}
+                </span>
+                <span className="font-semibold mr-2 text-left flex-auto">
+                  Number of new sources to sync{' '}
+                  <button
+                    onClick={this.refreshSources}
+                    className="text-blue-500 font-bold pl-3"
+                  >
+                    Refresh
+                  </button>
+                </span>
               </div>
             </div>
           </div>
+          {/* End information row */}
+
+          {/* Start sync row */}
+          <div className="mt-3 border-black border-4 bg-white px-2 py-3 flex flex-col">
+            <div className="bg-white">
+              Please note that syncing more than 20 sources will take a longer
+              time because of Readwise's API limits.
+            </div>
+            <div className="my-2">
+              {/* Only show when setState has completed. */}
+              {this.state.loaded && !this.state.sync && (
+                <React.Fragment>
+                  <button
+                    onClick={this.syncOnlyTOC}
+                    className="border border-blue-500 bg-white text-blue-500 px-2 py-1 rounded mr-2"
+                  >
+                    Sync only Table of Contents
+                  </button>
+                  <button
+                    onClick={this.syncReadwise}
+                    className="border bg-blue-500 text-white px-2 py-1 rounded"
+                  >
+                    Sync New Sources
+                  </button>
+                </React.Fragment>
+              )}
+
+              {/* Only show when Syncing */}
+              {this.state.sync && (
+                <button
+                  onClick={this.terminate}
+                  className="bg-red-500 text-white px-2 py-1 rounded"
+                >
+                  Stop Syncing
+                </button>
+              )}
+
+              {/* Start progress bar */}
+              <div className="relative pt-1 mt-3">
+                <div className="overflow-hidden h-2 text-xs flex rounded bg-black border border-black">
+                  <div
+                    id="myProgress"
+                    className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-white"
+                  ></div>
+                </div>
+              </div>
+              {/* End progress bar */}
+            </div>
+          </div>
+          {/* End sync row */}
         </div>
       </div>
     );

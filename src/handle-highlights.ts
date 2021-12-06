@@ -55,8 +55,6 @@ const getHighlightsForBook = async (latestBookList, width, elem, booklist) => {
     width = width + interval;
     elem.style.width = width + '%';
 
-    // await utils.sleep(parseInt(retryAfter) + 1000);
-
     let response;
     try {
       // Get highlights for each book
