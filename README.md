@@ -13,7 +13,7 @@ If you have multiple sources (e.g. books, tweets, instapaper) and thousands of h
 # Usage
 
 1. Go to your [Readwise Access Token](https://readwise.io/access_token) page and obtain a new token. Keep this token somewhere safe.
-2. Download the latest release of the plugin here.
+2. Download the latest release of the plugin [here](https://github.com/hkgnp/logseq-readwise-plugin/releases).
 3. Unzip the file to where you normally store your unpacked plugins.
 4. In Logseq, load the unpacked plugin.
 5. Click on the icon in the plugins bar.
