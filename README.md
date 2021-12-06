@@ -22,6 +22,10 @@ This is a simple Readwise plugin to:
 
 If you have multiple sources (e.g. books, tweets, instapaper) and thousands of highlights, the initial pull can take a while. You will have a progress bar to keep track on what's happening, and can terminate the pull process at any time. You can then refer to the page that you will be brought to, and the Table of Contents to see what has and has not been synced.
 
+This plugin should only be used for pulling highlights. Edits that you make on each source page will be overwritten each time you sync a new highlight for that source.
+
+Please also note that while you can make a block reference to a specific highlight, it will remain after your sync a new highlight, but clicking on the block reference will not take you to the source.
+
 # Usage
 
 1. Go to your [Readwise Access Token](https://readwise.io/access_token) page and obtain a new token. Keep this token somewhere safe.

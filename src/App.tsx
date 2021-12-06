@@ -235,8 +235,18 @@ export default class App extends React.Component {
           {/* Start sync row */}
           <div className="mt-3 border-black border-4 bg-white px-2 py-3 flex flex-col">
             <div className="bg-white">
-              Please note that syncing more than 20 sources will take a longer
-              time because of Readwise's API limits.
+              <p>
+                Syncing more than 20 sources will take a longer time because of
+                Readwise's API limits.
+              </p>
+              <p className="text-red-500">
+                This plugin should only be used for pulling highlights. Edits
+                that you make on each source page will be overwritten each time
+                you sync a new highlight for that source. Please also note that
+                while you can make a block reference to a specific highlight, it
+                will remain after your sync a new highlight, but clicking on the
+                block reference will not take you to the source.
+              </p>
             </div>
             <div className="my-2">
               {/* Only show when setState has completed. */}
