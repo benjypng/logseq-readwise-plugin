@@ -8,6 +8,16 @@ This is a simple Readwise plugin to:
 2. Pull in all your highlights from Readwise
 3. For subsequent pulls, it only pulls in those not in the graph
 
+# Samples
+
+### Sample of Table of Contents
+
+![](/screenshots/sample-toc.png)
+
+### Sample of a book highlight
+
+![](/screenshots/sample-highlights.png)
+
 # Disclaimer
 
 If you have multiple sources (e.g. books, tweets, instapaper) and thousands of highlights, the initial pull can take a while. You will have a progress bar to keep track on what's happening, and can terminate the pull process at any time. You can then refer to the page that you will be brought to, and the Table of Contents to see what has and has not been synced.
