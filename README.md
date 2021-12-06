@@ -27,4 +27,4 @@ If you have multiple sources (e.g. books, tweets, instapaper) and thousands of h
 # Future
 
 [x] Change style of popup.
-[] Will be incorporating the possibility of only pulling highlights for specific sources.
+[ ] Will be incorporating the possibility of only pulling highlights for specific sources.
