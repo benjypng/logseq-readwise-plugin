@@ -168,6 +168,7 @@ export default class App extends React.Component {
           {/* Token row */}
           <div className="flex flex-row py-2">
             <input
+              placeholder="Key in your Readwise API Token"
               type="text"
               name="token"
               value={this.state.token}
