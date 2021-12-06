@@ -15,6 +15,7 @@ export default class App extends React.Component {
     sync: false,
     loaded: false,
     isRefreshing: false,
+    errorLoading: '',
   };
 
   componentDidMount = async () => {
@@ -24,50 +25,49 @@ export default class App extends React.Component {
   loadFromReadwise = async () => {
     console.log(this.state.latestRetrieved);
 
-    const booklist = await axios({
-      method: 'get',
-      url: 'https://readwise.io/api/v2/books/',
-      headers: {
-        Authorization: `Token ${logseq.settings['token']}`,
-      },
-    });
-
     this.setState({
-      noOfBooks: booklist.data['count'],
+      noOfBooks: '',
+      noOfHighlights: '',
+      noOfNewHighlights: '',
+      booklist: [],
+      latestBookList: [],
+      errorLoading: false,
     });
 
-    this.setState({
-      booklist: booklist.data.results,
-    });
+    try {
+      const booklist = await axios({
+        method: 'get',
+        url: 'https://readwise.io/api/v2/books/',
+        headers: {
+          Authorization: `Token ${logseq.settings['token']}`,
+        },
+      });
 
-    const highlightsList = await axios({
-      method: 'get',
-      url: 'https://readwise.io/api/v2/highlights/',
-      headers: {
-        Authorization: `Token ${logseq.settings['token']}`,
-      },
-    });
+      const highlightsList = await axios({
+        method: 'get',
+        url: 'https://readwise.io/api/v2/highlights/',
+        headers: {
+          Authorization: `Token ${logseq.settings['token']}`,
+        },
+      });
 
-    this.setState({
-      noOfHighlights: highlightsList.data['count'],
-    });
+      // Filter out books where there are highlights newer than the last retrieved date
+      const latestBookList = booklist.data.results.filter(
+        (b) =>
+          new Date(b.updated) > new Date(logseq.settings['latestRetrieved'])
+      );
 
-    // Filter out books where there are highlights newer than the last retrieved date
-    const latestBookList = booklist.data.results.filter(
-      (b) => new Date(b.updated) > new Date(logseq.settings['latestRetrieved'])
-    );
-
-    this.setState({
-      noOfNewHighlights: latestBookList.length,
-    });
-
-    this.setState({
-      latestBookList: latestBookList,
-    });
-
-    this.setState({
-      loaded: true,
-    });
+      this.setState({
+        noOfBooks: booklist.data['count'],
+        booklist: booklist.data.results,
+        noOfHighlights: highlightsList.data['count'],
+        noOfNewHighlights: latestBookList.length,
+        latestBookList: latestBookList,
+        loaded: true,
+      });
+    } catch (e) {
+      this.setState({ errorLoading: true });
+    }
   };
 
   syncReadwise = () => {
@@ -183,6 +183,11 @@ export default class App extends React.Component {
               Save Token
             </button>
           </div>
+          {this.state.errorLoading && (
+            <p className="text-red-500 text-sm mt-0">
+              Wrong API token entered. Please try again.
+            </p>
+          )}
 
           {/* Sources and highlights row */}
           <div className="flex flex-start flex-col">
