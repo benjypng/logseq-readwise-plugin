@@ -1,6 +1,6 @@
 # Overview
 
-![](/screenshots/sync.png)
+![](/screenshots/syncing.gif)
 
 This is a simple Readwise plugin to:
 
@@ -23,6 +23,8 @@ If you have multiple sources (e.g. books, tweets, instapaper) and thousands of h
 7. Key in the token that you obtained in (1) and click `Save Token`.
 8. Review the number of sources and highlights that you have.
 9. Choose to either sync highlights or sync only the 'Table of Contents'.
+
+![](/screenshots/sync.png)
 
 # Future
 
