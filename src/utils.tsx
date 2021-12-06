@@ -26,6 +26,7 @@ const pageName = 'Readwise TOC';
 
 const clearPage = async (arr) => {
   for (let i of arr) {
+    console.log(`Deleting ${i.content}`);
     await logseq.Editor.removeBlock(i.uuid);
   }
 };

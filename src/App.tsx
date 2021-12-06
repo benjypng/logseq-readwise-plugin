@@ -1,7 +1,8 @@
 import React from 'react';
 import './App.css';
 import axios from 'axios';
-import handleHighlights from './handle-highlights';
+import handleHighlights from './handle-highlights2';
+import { isThisTypeNode } from 'typescript';
 
 export default class App extends React.Component {
   state = {
@@ -9,7 +10,7 @@ export default class App extends React.Component {
     latestRetrieved: logseq.settings['latestRetrieved'],
     noOfBooks: '',
     noOfHighlights: '',
-    noOfNewHighlights: '',
+    noOfNewSources: '',
     booklist: [],
     latestBookList: [],
     sync: false,
@@ -28,7 +29,7 @@ export default class App extends React.Component {
     this.setState({
       noOfBooks: '',
       noOfHighlights: '',
-      noOfNewHighlights: '',
+      noOfNewSources: '',
       booklist: [],
       latestBookList: [],
       errorLoading: false,
@@ -61,7 +62,7 @@ export default class App extends React.Component {
         noOfBooks: booklist.data['count'],
         booklist: booklist.data.results,
         noOfHighlights: highlightsList.data['count'],
-        noOfNewHighlights: latestBookList.length,
+        noOfNewSources: latestBookList.length,
         latestBookList: latestBookList,
         loaded: true,
       });
@@ -70,7 +71,7 @@ export default class App extends React.Component {
     }
   };
 
-  syncReadwise = () => {
+  syncReadwise = async () => {
     this.setState({
       sync: 'true',
     });
@@ -85,20 +86,15 @@ export default class App extends React.Component {
       ///// STEP 1: CREATE TABLE OF CONTENTS /////
       ////////////////////////////////////////////
 
-      const { booklist, latestBookList, latestRetrieved } = this.state;
+      const { latestBookList, latestRetrieved } = this.state;
 
-      handleHighlights.createReadwiseToc(latestRetrieved, booklist);
+      await handleHighlights.createReadwiseToc(latestBookList);
 
       ///////////////////////////////////////////////////////////
       ///// STEP 2: GO TO EACH PAGE AND POPULATE HIGHLIGHTS /////
       ///////////////////////////////////////////////////////////
 
-      handleHighlights.getHighlightsForBook(
-        latestBookList,
-        width,
-        elem,
-        booklist
-      );
+      await handleHighlights.getHighlightsForBook(latestBookList, width, elem);
     }
 
     this.setState({
@@ -126,11 +122,6 @@ export default class App extends React.Component {
     this.loadFromReadwise();
   };
 
-  syncOnlyTOC = () => {
-    const { latestRetrieved, booklist } = this.state;
-    handleHighlights.createReadwiseToc(latestRetrieved, booklist);
-  };
-
   refreshSources = () => {
     this.loadFromReadwise();
   };
@@ -145,12 +136,14 @@ export default class App extends React.Component {
         <div className="absolute top-3 bg-white rounded-lg p-3 w-100 border">
           {/* First row */}
           <div className="flex justify-between">
-            <button
-              onClick={this.firstTime}
-              className="text-black border border-black px-2 mb-2 mr-2 mt-3 rounded-md text-left"
-            >
-              Click here if you are using this plugin for the first time
-            </button>
+            {this.state.token === '' && (
+              <button
+                onClick={this.firstTime}
+                className="text-black border border-black px-2 mb-2 mr-2 mt-3 rounded-md text-left"
+              >
+                Click here if you are using this plugin for the first time
+              </button>
+            )}
             <button onClick={this.hide} className="z-50">
               <svg
                 className="fill-current text-black"
@@ -216,7 +209,7 @@ export default class App extends React.Component {
             <div className="text-center">
               <div className="p-2 bg-white items-center text-black flex">
                 <span className="flex rounded-full bg-white uppercase px-2 py-1 text-xs font-bold mr-3 border border-black">
-                  {this.state.noOfNewHighlights}
+                  {this.state.noOfNewSources}
                 </span>
                 <span className="font-semibold mr-2 text-left flex-auto">
                   Number of new sources to sync{' '}
@@ -251,20 +244,12 @@ export default class App extends React.Component {
             <div className="my-2">
               {/* Only show when setState has completed. */}
               {this.state.loaded && !this.state.sync && (
-                <React.Fragment>
-                  <button
-                    onClick={this.syncOnlyTOC}
-                    className="border border-blue-500 bg-white text-blue-500 px-2 py-1 rounded mr-2"
-                  >
-                    Sync only Table of Contents
-                  </button>
-                  <button
-                    onClick={this.syncReadwise}
-                    className="border bg-blue-500 text-white px-2 py-1 rounded"
-                  >
-                    Sync New Sources
-                  </button>
-                </React.Fragment>
+                <button
+                  onClick={this.syncReadwise}
+                  className="border bg-blue-500 text-white px-2 py-1 rounded"
+                >
+                  Sync New Sources
+                </button>
               )}
 
               {/* Only show when Syncing */}
