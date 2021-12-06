@@ -123,6 +123,7 @@ export default class App extends React.Component {
 
   saveToken = () => {
     logseq.updateSettings({ token: this.state.token });
+    this.loadFromReadwise();
   };
 
   syncOnlyTOC = () => {
