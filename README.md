@@ -1,18 +1,11 @@
 # Overview
 
-![](/screenshots/syncing.gif)
-
 This is a simple Readwise plugin to:
 
-1. Creates a 'Table of Contents' from your sources
-2. Pull in all your highlights from Readwise
-3. For subsequent pulls, it only pulls in those not in the graph
+1. Pull in all your highlights from Readwise
+2. For subsequent pulls, it only pulls in those not in the graph
 
 # Samples
-
-### Sample of Table of Contents
-
-![](/screenshots/sample-toc.png)
 
 ### Sample of a book highlight
 
@@ -20,11 +13,11 @@ This is a simple Readwise plugin to:
 
 # Disclaimer
 
-If you have multiple sources (e.g. books, tweets, instapaper) and thousands of highlights, the initial pull can take a while. You will have a progress bar to keep track on what's happening, and can terminate the pull process at any time. You can then refer to the page that you will be brought to, and the Table of Contents to see what has and has not been synced.
+If you have multiple sources (e.g. books, tweets, instapaper) and thousands of highlights, the initial pull can take a while. You will have a progress bar to keep track on what's happening, and can terminate the pull process at any time.
 
-This plugin should only be used for pulling highlights. Edits that you make on each source page will be overwritten each time you sync a new highlight for that source.
+Each source will have its own page in Logseq. If there has been an error, just remove the necessary pages and refresh your graph.
 
-Please also note that while you can make a block reference to a specific highlight, it will remain after your sync a new highlight, but clicking on the block reference will not take you to the source.
+New highlights are found by comparing the date of the highlight against the date of the latest highlight in your last synchronisation. When using the plugin for the first time, the initial date is set to `1970-01-01T00:00:00Z`.
 
 # Usage
 
@@ -36,7 +29,7 @@ Please also note that while you can make a block reference to a specific highlig
 6. If you are using the plugin for the first time, do remember to click the button `Click here if you are using this plugin for the first time`.
 7. Key in the token that you obtained in (1) and click `Save Token`.
 8. Review the number of sources and highlights that you have.
-9. Choose to either sync highlights or sync only the 'Table of Contents'.
+9. Click button to sync highlights.
 
 ![](/screenshots/sync.png)
 

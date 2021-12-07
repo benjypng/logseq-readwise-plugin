@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import axios from 'axios';
-import handleHighlights from './handle-highlights2';
+import handleHighlights from './handle-highlights';
 
 export default class App extends React.Component {
   state = {
