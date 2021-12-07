@@ -21,6 +21,8 @@ New highlights are found by comparing the date of the highlight against the date
 
 # Usage
 
+### First Time
+
 1. Go to your [Readwise Access Token](https://readwise.io/access_token) page and obtain a new token. Keep this token somewhere safe.
 2. Download the latest release of the plugin [here](https://github.com/hkgnp/logseq-readwise-plugin/releases).
 3. Unzip the file to where you normally store your unpacked plugins.
@@ -32,6 +34,11 @@ New highlights are found by comparing the date of the highlight against the date
 9. Click button to sync highlights.
 
 ![](/screenshots/sync.png)
+
+### Subsequent times
+
+1. Click refresh to retrieve the recent number of changes.
+2. Click button to sync highlights.
 
 # Future
 
