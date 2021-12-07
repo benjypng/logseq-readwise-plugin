@@ -20,11 +20,11 @@ export default class App extends React.Component {
 
   componentDidMount = async () => {
     this.loadFromReadwise();
-    console.log(this.state.latestRetrieved);
+    console.log(logseq.settings['latestRetrieved']);
   };
 
   loadFromReadwise = async () => {
-    console.log(this.state.latestRetrieved);
+    console.log(logseq.settings['latestRetrieved']);
 
     this.setState({
       noOfBooks: '',
@@ -79,12 +79,21 @@ export default class App extends React.Component {
     let i = 0;
     if (i == 0) {
       i = 1;
-      var elem = document.getElementById('myProgress');
-      var width = 1;
+      const elemBar = document.getElementById('myProgress');
+      const elemText = document.getElementById('textPercent');
+      const coolingOffDiv = document.getElementById('coolingOffDiv');
+      const width = 1;
 
-      const { latestBookList } = this.state;
+      const { latestBookList, token } = this.state;
 
-      await handleHighlights.getHighlightsForBook(latestBookList, width, elem);
+      await handleHighlights.getHighlightsForBook(
+        latestBookList,
+        token,
+        width,
+        elemBar,
+        elemText,
+        coolingOffDiv
+      );
 
       await this.loadFromReadwise();
     }
@@ -115,12 +124,13 @@ export default class App extends React.Component {
   };
 
   firstTime = async () => {
-    this.setState({
-      latestRetrieved: '1970-01-01T00:00:00Z',
-    });
     logseq.updateSettings({
       latestRetrieved: '1970-01-01T00:00:00Z',
     });
+    this.setState({
+      latestRetrieved: logseq.settings['latestRetrieved'],
+    });
+    console.log(this.state.latestRetrieved);
   };
 
   render() {
@@ -243,18 +253,24 @@ export default class App extends React.Component {
                   onClick={this.terminate}
                   className="bg-red-500 text-white px-2 py-1 rounded"
                 >
-                  Stop Syncing
+                  Stop Syncing (please reload plugin)
                 </button>
               )}
+
+              <div id="coolingOffDiv" className="text-red-500 text-sm"></div>
 
               {/* Start progress bar */}
               <div className="relative pt-1 mt-3">
                 <div className="overflow-hidden h-2 text-xs flex rounded bg-black border border-black">
                   <div
                     id="myProgress"
-                    className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-white"
+                    className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-white w-0"
                   ></div>
                 </div>
+                <p
+                  className="text-right text-black text-sm"
+                  id="textPercent"
+                ></p>
               </div>
               {/* End progress bar */}
             </div>
