@@ -43,6 +43,7 @@ New highlights are found by comparing the date of the highlight against the date
 # Future
 
 - [x] Change style of popup.
+- [x] Fix issue of pulling new highlights removing old blocks from existing pages.
 - [ ] Will be incorporating the possibility of only pulling highlights for specific sources.
 
 ![GitHub all releases](https://img.shields.io/github/downloads/hkgnp/logseq-readwise-plugin/total)
