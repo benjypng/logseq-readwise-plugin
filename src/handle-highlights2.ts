@@ -1,51 +1,9 @@
 import utils from './utils';
 import axios from 'axios';
 
-const createReadwiseToc = async (latestBookList) => {
-  // Function to insert blocks
-  const insertTOC = async (booklistArr, currPage) => {
-    const targetBlock = await logseq.Editor.insertBlock(
-      currPage.name,
-      'Fetching books ...',
-      {
-        isPageBlock: true,
-      }
-    );
-
-    await logseq.Editor.insertBatchBlock(targetBlock.uuid, booklistArr, {
-      sibling: true,
-    });
-
-    await logseq.Editor.updateBlock(
-      targetBlock.uuid,
-      `retrieved:: ${utils.blockTitle()}`
-    );
-  };
-
-  // Map list of books into logseq compatible array
-  const booklistArr = latestBookList.map((b) => ({
-    content: `[[${b.title}]]
-            author:: [[${b.author}]]
-            `,
-  }));
-
-  // Create Title for Table of Contents
-  logseq.App.pushState('page', { name: utils.pageName });
-
-  // Check if page is populated. If it is, clear page and re-insert the blocks
-  const currPage = await logseq.Editor.getCurrentPage();
-  const pageBlockTree = await logseq.Editor.getCurrentPageBlocksTree();
-
-  if (pageBlockTree.length > 0) {
-    await utils.clearPage(pageBlockTree);
-    await insertTOC(booklistArr, currPage);
-  } else {
-    await insertTOC(booklistArr, currPage);
-  }
-};
-
 const getHighlightsForBook = async (latestBookList, width, elem) => {
   console.log('Getting highlights');
+
   // Go to each page that has a latest updated date and populate each page
   for (let b of latestBookList) {
     logseq.App.pushState('page', { name: b.title });
@@ -176,9 +134,13 @@ const getHighlightsForBook = async (latestBookList, width, elem) => {
 
   logseq.App.showMsg('Highlights imported!');
 
+  // Reset progress bar
+  width = 1;
+  elem.style.width = width + '%';
+
   logseq.updateSettings({
     latestRetrieved: latestBookList[0].updated,
   });
 };
 
-export default { createReadwiseToc, getHighlightsForBook };
+export default { getHighlightsForBook };

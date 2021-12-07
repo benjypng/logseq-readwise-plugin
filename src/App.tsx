@@ -2,7 +2,6 @@ import React from 'react';
 import './App.css';
 import axios from 'axios';
 import handleHighlights from './handle-highlights2';
-import { isThisTypeNode } from 'typescript';
 
 export default class App extends React.Component {
   state = {
@@ -21,6 +20,7 @@ export default class App extends React.Component {
 
   componentDidMount = async () => {
     this.loadFromReadwise();
+    console.log(this.state.latestRetrieved);
   };
 
   loadFromReadwise = async () => {
@@ -40,7 +40,7 @@ export default class App extends React.Component {
         method: 'get',
         url: 'https://readwise.io/api/v2/books/',
         headers: {
-          Authorization: `Token ${logseq.settings['token']}`,
+          Authorization: `Token ${this.state.token}`,
         },
       });
 
@@ -48,7 +48,7 @@ export default class App extends React.Component {
         method: 'get',
         url: 'https://readwise.io/api/v2/highlights/',
         headers: {
-          Authorization: `Token ${logseq.settings['token']}`,
+          Authorization: `Token ${this.state.token}`,
         },
       });
 
@@ -82,19 +82,11 @@ export default class App extends React.Component {
       var elem = document.getElementById('myProgress');
       var width = 1;
 
-      ////////////////////////////////////////////
-      ///// STEP 1: CREATE TABLE OF CONTENTS /////
-      ////////////////////////////////////////////
-
-      const { latestBookList, latestRetrieved } = this.state;
-
-      await handleHighlights.createReadwiseToc(latestBookList);
-
-      ///////////////////////////////////////////////////////////
-      ///// STEP 2: GO TO EACH PAGE AND POPULATE HIGHLIGHTS /////
-      ///////////////////////////////////////////////////////////
+      const { latestBookList } = this.state;
 
       await handleHighlights.getHighlightsForBook(latestBookList, width, elem);
+
+      await this.loadFromReadwise();
     }
 
     this.setState({
@@ -117,17 +109,18 @@ export default class App extends React.Component {
     });
   };
 
-  saveToken = () => {
-    logseq.updateSettings({ token: this.state.token });
-    this.loadFromReadwise();
+  saveToken = async () => {
+    await logseq.updateSettings({ token: this.state.token });
+    await this.loadFromReadwise();
   };
 
-  refreshSources = () => {
-    this.loadFromReadwise();
-  };
-
-  firstTime = () => {
-    logseq.updateSettings({ latestRetrieved: '1970-01-01T00:00:00Z' });
+  firstTime = async () => {
+    this.setState({
+      latestRetrieved: '1970-01-01T00:00:00Z',
+    });
+    logseq.updateSettings({
+      latestRetrieved: '1970-01-01T00:00:00Z',
+    });
   };
 
   render() {
@@ -136,7 +129,7 @@ export default class App extends React.Component {
         <div className="absolute top-3 bg-white rounded-lg p-3 w-100 border">
           {/* First row */}
           <div className="flex justify-between">
-            {this.state.token === '' && (
+            {!this.state.latestRetrieved && (
               <button
                 onClick={this.firstTime}
                 className="text-black border border-black px-2 mb-2 mr-2 mt-3 rounded-md text-left"
@@ -214,7 +207,7 @@ export default class App extends React.Component {
                 <span className="font-semibold mr-2 text-left flex-auto">
                   Number of new sources to sync{' '}
                   <button
-                    onClick={this.refreshSources}
+                    onClick={this.loadFromReadwise}
                     className="text-blue-500 font-bold pl-3"
                   >
                     Refresh
@@ -231,14 +224,6 @@ export default class App extends React.Component {
               <p>
                 Syncing more than 20 sources will take a longer time because of
                 Readwise's API limits.
-              </p>
-              <p className="text-red-500">
-                This plugin should only be used for pulling highlights. Edits
-                that you make on each source page will be overwritten each time
-                you sync a new highlight for that source. Please also note that
-                while you can make a block reference to a specific highlight, it
-                will remain after your sync a new highlight, but clicking on the
-                block reference will not take you to the source.
               </p>
             </div>
             <div className="my-2">
