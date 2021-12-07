@@ -104,7 +104,7 @@ const getHighlightsForBook = async (
       // Insert highlights block
       const highlightsBlock = await logseq.Editor.insertBlock(
         imageBlock.uuid,
-        `[[Readwise Highlights]]`,
+        `## [[Readwise Highlights]]`,
         { sibling: true }
       );
 
