@@ -62,18 +62,24 @@ const getHighlightsForBook = async (
     );
 
     // Prepare latest highlights for logeq insertion
-    const latestHighlightsArr = latestHighlights.map((h) => ({
-      content: `${h.text}
-                                      location:: [${
-                                        h.location
-                                      }](kindle://book?action=open&asin=${
-        b.asin
-      }&location=${h.location})
-                                      on:: [[${utils.getDateForPage(
-                                        new Date(h.highlighted_at)
-                                      )}]]
-                                      `,
-    }));
+    let latestHighlightsArr;
+    if (b.source === 'kindle') {
+      latestHighlightsArr = latestHighlights.map((h) => ({
+        content: `${h.text}
+                {location:: [${h.location}](kindle://book?action=open&asin=${
+          b.asin
+        }&location=${h.location})}
+                on:: [[${utils.getDateForPage(new Date(h.highlighted_at))}]]
+                `,
+      }));
+    } else {
+      latestHighlightsArr = latestHighlights.map((h) => ({
+        content: `${h.text}
+                link:: [${h.url}](${h.url})
+                on:: [[${utils.getDateForPage(new Date(h.highlighted_at))}]]
+                `,
+      }));
+    }
 
     // Check if page is empty. If empty, create the basic template. If not empty, update only the Readwise Highlights section
     if (pageBlockTree.length === 0) {
@@ -127,7 +133,7 @@ const getHighlightsForBook = async (
     } else {
       // Insert only new highlights in Readwise Highlights block
       const highlightsBlock = pageBlockTree.filter(
-        (b) => b.content == '[[Readwise Highlights]]'
+        (b) => b.content == '## [[Readwise Highlights]]'
       );
 
       const headerBlock = pageBlockTree[0];
@@ -157,9 +163,11 @@ const getHighlightsForBook = async (
   elemBar.style.width = width + '%';
   elemText.innerHTML = parseFloat(width).toFixed(2) + '%';
 
-  logseq.updateSettings({
-    latestRetrieved: latestBookList[0].updated,
-  });
+  if (latestBookList.length > 0) {
+    logseq.updateSettings({
+      latestRetrieved: latestBookList[0].last_highlight_at,
+    });
+  }
 };
 
 export default { getHighlightsForBook };

@@ -20,7 +20,6 @@ export default class App extends React.Component {
 
   componentDidMount = async () => {
     this.loadFromReadwise();
-    console.log(logseq.settings['latestRetrieved']);
   };
 
   loadFromReadwise = async () => {
@@ -55,7 +54,8 @@ export default class App extends React.Component {
       // Filter out books where there are highlights newer than the last retrieved date
       const latestBookList = booklist.data.results.filter(
         (b) =>
-          new Date(b.updated) > new Date(logseq.settings['latestRetrieved'])
+          new Date(b.last_highlight_at) >
+          new Date(logseq.settings['latestRetrieved'])
       );
 
       this.setState({
@@ -82,7 +82,7 @@ export default class App extends React.Component {
       const elemBar = document.getElementById('myProgress');
       const elemText = document.getElementById('textPercent');
       const coolingOffDiv = document.getElementById('coolingOffDiv');
-      const width = 1;
+      const width = 0;
 
       const { latestBookList, token } = this.state;
 
