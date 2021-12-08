@@ -1,3 +1,5 @@
+![GitHub all releases](https://img.shields.io/github/downloads/hkgnp/logseq-readwise-plugin/total)
+
 # Overview
 
 This is a simple Readwise plugin to:
@@ -50,7 +52,5 @@ New highlights are found by comparing the date of the highlight against the date
 
 - [x] Change style of popup.
 - [x] Fix issue of pulling new highlights removing old blocks from existing pages.
-- [ ] Fix source of non-Kindle highlights.
+- [x] Fix source of non-Kindle highlights.
 - [ ] Will be incorporating the possibility of only pulling highlights for specific sources.
-
-![GitHub all releases](https://img.shields.io/github/downloads/hkgnp/logseq-readwise-plugin/total)
