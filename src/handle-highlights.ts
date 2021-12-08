@@ -66,9 +66,9 @@ const getHighlightsForBook = async (
     if (b.source === 'kindle') {
       latestHighlightsArr = latestHighlights.map((h) => ({
         content: `${h.text}
-                {location:: [${h.location}](kindle://book?action=open&asin=${
+                location:: [${h.location}](kindle://book?action=open&asin=${
           b.asin
-        }&location=${h.location})}
+        }&location=${h.location})
                 on:: [[${utils.getDateForPage(new Date(h.highlighted_at))}]]
                 `,
       }));
