@@ -72,8 +72,6 @@ New highlights are found by comparing the date of the highlight against the date
 
 # Detailed Instructions
 
-Adapted from [Readwise's help article for Obsidian](https://help.readwise.io/article/125-how-does-the-readwise-to-obsidian-export-integration-work)
-
 ## How do I reset the export of my whole library, e.g. to start afresh?
 
 As this plugin is still new, you may encounter situations where you want to reset your export. Firstly, thank you so much for trying this plugin out and reporting the bugs that I've missed! Secondly, you can reset by one of 2 approaches:
@@ -132,6 +130,8 @@ If you have the Kindle app installed on your desktop, you will be brought direct
 Feel free to look for me on Discord, or just opening an issue in this repository.
 
 Thanks for trying out the plugin!
+
+Adapted from [Readwise's help article for Obsidian](https://help.readwise.io/article/125-how-does-the-readwise-to-obsidian-export-integration-work)
 
 # Future
 
