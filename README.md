@@ -131,7 +131,7 @@ Feel free to look for me on Discord, or just opening an issue in this repository
 
 Thanks for trying out the plugin!
 
-Adapted from [Readwise's help article for Obsidian](https://help.readwise.io/article/125-how-does-the-readwise-to-obsidian-export-integration-work)
+_Adapted from [Readwise's help article for Obsidian](https://help.readwise.io/article/125-how-does-the-readwise-to-obsidian-export-integration-work)_
 
 # Future
 
