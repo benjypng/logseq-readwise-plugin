@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import axios from 'axios';
 import handleHighlights from './handle-highlights';
+import utils from './utils';
 
 export default class App extends React.Component {
   state = {
@@ -25,6 +26,21 @@ export default class App extends React.Component {
   loadFromReadwise = async () => {
     console.log(logseq.settings['latestRetrieved']);
 
+    const subsequentSyncs = async (i, booklist) => {
+      const response = await axios({
+        method: 'get',
+        url: `https://readwise.io/api/v2/books/?page=${i}`,
+        headers: {
+          Authorization: `Token ${this.state.token}`,
+        },
+        params: {
+          page_size: pageSize,
+        },
+      });
+
+      Array.prototype.push.apply(booklist, response.data.results);
+    };
+
     this.setState({
       noOfBooks: '',
       noOfHighlights: '',
@@ -34,23 +50,43 @@ export default class App extends React.Component {
       errorLoading: false,
     });
 
+    const pageSize = 10;
     try {
-      const booklist = await axios({
+      const initialSync = await axios({
         method: 'get',
         url: 'https://readwise.io/api/v2/books/',
         headers: {
           Authorization: `Token ${this.state.token}`,
         },
         params: {
-          page_size: 1000,
+          page_size: pageSize,
         },
       });
 
-      if (booklist.data.count > 1000) {
-        logseq.App.showMsg(
-          'You have too many sources! Please contact the developer if you see this!'
-        );
-        return;
+      let booklist: any[] = initialSync.data.results;
+
+      if (initialSync.data.count > pageSize) {
+        const noOfPages = Math.ceil(initialSync.data.count / pageSize);
+
+        for (let i = 2; i < noOfPages + 1; i++) {
+          try {
+            subsequentSyncs(i, booklist);
+          } catch (e) {
+            // Implement retry after if trying to get too many sources at one time.
+            console.log(e);
+            document.getElementById('initialLoadWait').innerHTML =
+              'You have more than 1,000 sources! Please wait while we retrieve them.';
+            const retryAfter =
+              parseInt(e.response.headers['retry-after']) * 1000 + 5000;
+            await utils.sleep(retryAfter);
+
+            // Execute subsequent sync
+            subsequentSyncs(i, booklist);
+
+            // Reset notification
+            document.getElementById('initialLoadWait').innerHTML = '';
+          }
+        }
       }
 
       const highlightsList = await axios({
@@ -62,15 +98,14 @@ export default class App extends React.Component {
       });
 
       // Filter out books where there are highlights newer than the last retrieved date
-      const latestBookList = booklist.data.results.filter(
+      const latestBookList = booklist.filter(
         (b) =>
-          new Date(b.last_highlight_at) >
-          new Date(logseq.settings['latestRetrieved'])
+          new Date(b.updated) > new Date(logseq.settings['latestRetrieved'])
       );
 
       this.setState({
-        noOfBooks: booklist.data['count'],
-        booklist: booklist.data.results,
+        noOfBooks: initialSync.data['count'],
+        booklist: booklist,
         noOfHighlights: highlightsList.data['count'],
         noOfNewSources: latestBookList.length,
         latestBookList: latestBookList,
@@ -149,6 +184,7 @@ export default class App extends React.Component {
         <div className="absolute top-3 bg-white rounded-lg p-3 w-100 border">
           {/* First row */}
           <div className="flex justify-between">
+            <div id="initialLoadWait" className="text-sm text-red-500"></div>
             {!this.state.latestRetrieved && (
               <button
                 onClick={this.firstTime}
@@ -191,7 +227,7 @@ export default class App extends React.Component {
           </div>
           {this.state.errorLoading && (
             <p className="text-red-500 text-sm mt-0">
-              Wrong API token entered. Please try again.
+              Error loading data. Please refer to developer tools.
             </p>
           )}
 
