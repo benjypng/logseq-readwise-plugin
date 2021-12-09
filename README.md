@@ -31,7 +31,7 @@ If you have multiple sources (e.g. books, tweets, instapaper) and thousands of h
 
 Each source will have its own page in Logseq. If there has been an error, just remove the necessary pages and refresh your graph. Assuming that you do not have any filenames containing `(Readwise)`, you can use the following command in MacOS to remove all the pages added by the plugin. Be sure to refresh your graph in Logseq before attempting any new synchronisation.
 
-`find . -name "*(Readwise)*"`
+`find . -name "*(Readwise)*" -delete`
 
 New highlights are found by comparing the date of the highlight against the date of the latest highlight in your last synchronisation. When using the plugin for the first time, the initial date is set to `1970-01-01T00:00:00Z`.
 
@@ -57,7 +57,7 @@ New highlights are found by comparing the date of the highlight against the date
 2. Download the latest release of the plugin [here](https://github.com/hkgnp/logseq-readwise-plugin/releases).
 3. Unzip the file to where you normally store your unpacked plugins.
 4. In Logseq, load the unpacked plugin.
-5. Click on the icon in the plugins bar.
+5. Click on the icon (📖) in the plugins bar.
 6. If you are using the plugin for the first time, do remember to click the button `Click here if you are using this plugin for the first time`.
 7. Key in the token that you obtained in (1) and click `Save Token`.
 8. Review the number of sources and highlights that you have.
@@ -69,6 +69,69 @@ New highlights are found by comparing the date of the highlight against the date
 
 1. Click refresh to retrieve the recent number of changes.
 2. Click button to sync highlights.
+
+# Detailed Instructions
+
+Adapted from [Readwise's help article for Obsidian](https://help.readwise.io/article/125-how-does-the-readwise-to-obsidian-export-integration-work)
+
+## How do I reset the export of my whole library, e.g. to start afresh?
+
+As this plugin is still new, you may encounter situations where you want to reset your export. Firstly, thank you so much for trying this plugin out and reporting the bugs that I've missed! Secondly, you can reset by one of 2 approaches:
+
+**Please backup your graph before attempting any of the below**
+
+1. Using a script to find all files ending with `(Readwise)` and deleting them. Naturally, this \*\*assumes that you do not have any other pages whose name includes `(Readwise)` if not they will be deleted as well. After deleting the files, please restart Logseq and refresh your graph. A MacOS script example would be:
+
+`find . -name "*(Readwise)*" -delete`
+
+2. Using File Explorer (Windows) or Finder (MacOS) to find these files and delete them manually. Files created by this plugin have `(Readwise)` added to the end of their filenames.
+
+## What happens when I take new highlights? Do they sync automatically with Logseq?
+
+Not really. When you open Logseq and click on the plugin button (📖), you will see the new number of sources that you took highlights from since your last sync. If you would like to sync those sources, you can proceed to click on the `Sync New Sources` button.
+
+## What is a source?
+
+A source is basically a book, a twitter account, etc that contains highlights.
+
+## Why are new pages being created?
+
+If the new highlight(s) is from a new source, a new page in Logseq will be created. If it is from an _existing_ source, the highlight(s) will be appended to the top of your current highlights list, right under the `Readwise Highlights` block.
+
+Certain services such as Amazon Kindle, Instapaper do not provide automatic synchronisation with Readwise. In these cases, you can either wait for it to appear as a new source in the plugin, or proceed to your Readwise dashboard to manually sync them, and then initiate the sync from the plugin button (📖).
+
+## How do I trigger a new sync from Logseq?
+
+By default, the plugin will automatically sync when you open the Logseq app and look for new highlights. You can then click the `Sync New Sources` button to initiate the sync.
+
+Without clicking `Sync New Sources` button, the plugin will not automatically create pages or pull highlights in for you.
+
+## What happens when I update highlights in Readwise? Will those changes automatically sync with Logseq (or vice versa)?
+
+Unfortunately not. It will be technically challenging to look for that specific highlight within a page, and make changes to it without the possibility to accidentally removing edits made by the user.
+
+## Can I rename the page in Obsidian?
+
+Unfortunately not as well. The plugin uses the original name given to the source to find and add subsequent highlights. If you rename it, when there are new highlights, a new page will be created for the source (with the old name). Hence, you should only rename when you do not expect any more highlights from that source, e.g. a book that you know you will not make any more highlights for it.
+
+## Can I edit the page that the plugin created for a source?
+
+Yes and no. As long as you do not change any of the following, you may edit the page, e.g. add in your own thoughts as child blocks under the highlights.
+
+- Rename the block `[[Readwise Highlights]]`.
+- Convert the block `[[Readwise Highlights]]` to a child block.
+
+The above is because `[[Readwise Highlights]]` is used when syncing new highlights to that source.
+
+## Where does the Location link in each Kindle highlight take me?
+
+If you have the Kindle app installed on your desktop, you will be brought directly to the highlight in the Kindle app when you click on the link.
+
+## What do I do if I have other Feature Requests to suggest or bugs to report?
+
+Feel free to look for me on Discord, or just opening an issue in this repository.
+
+Thanks for trying out the plugin!
 
 # Future
 
