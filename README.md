@@ -1,5 +1,7 @@
 ![GitHub all releases](https://img.shields.io/github/downloads/hkgnp/logseq-readwise-plugin/total)
 
+> Please note that the plugin can only be installed manually, as there are some issues installing from the marketplace. I've since reported it to the devs for troublshooting. Thanks!
+
 # Overview
 
 This is a simple Readwise plugin to:
@@ -33,7 +35,21 @@ New highlights are found by comparing the date of the highlight against the date
 
 # Usage
 
-### First Time
+### Migrating from manual loading to marketplace
+
+**BEFORE YOU INSTALL FROM THE MARKETPLACE**, please follow the instructions below to avoid synchronising duplicate highlights:
+
+1. Go to the settings folder of the manually loaded plugin (Windows: `C:\Users\Peter\.logseq\settings` or MacOS: `~/.logseq/settings).
+2. Open the file `logseq-readwise-plugin.json` and copy the contents of the file somewhere.
+3. Uninstall the manually loaded plugin.
+4. Install the plugin from the marketplace.
+5. Click on the settings icon in the plugins page and click `Open settings`.
+   ![](/screenshots/settings.png).
+6. Copy the contents in Step 2 and paste it in the file that opens up. Save and close the file.
+7. Restart Logseq.
+8. You can start to use the plugin after!
+
+### First time
 
 1. Go to your [Readwise Access Token](https://readwise.io/access_token) page and obtain a new token. Keep this token somewhere safe.
 2. Download the latest release of the plugin [here](https://github.com/hkgnp/logseq-readwise-plugin/releases).
