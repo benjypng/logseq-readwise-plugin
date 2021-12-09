@@ -1,6 +1,6 @@
 ![GitHub all releases](https://img.shields.io/github/downloads/hkgnp/logseq-readwise-plugin/total)
 
-> Please note that the plugin can only be installed manually, as there are some issues installing from the marketplace. I've since reported it to the devs for troublshooting. Thanks!
+> Installing the plugin from the martketplace now works! If you are changing from manually loading the plugin to using the one from the marketplace, please read the [instructions here](https://github.com/hkgnp/logseq-readwise-plugin#migrating-from-manual-loading-to-marketplace) to prevent synchronising of duplicate data.
 
 # Overview
 
