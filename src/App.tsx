@@ -41,7 +41,17 @@ export default class App extends React.Component {
         headers: {
           Authorization: `Token ${this.state.token}`,
         },
+        params: {
+          page_size: 1000,
+        },
       });
+
+      if (booklist.data.count > 1000) {
+        logseq.App.showMsg(
+          'You have too many sources! Please contact the developer if you see this!'
+        );
+        return;
+      }
 
       const highlightsList = await axios({
         method: 'get',
