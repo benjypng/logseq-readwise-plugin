@@ -117,7 +117,7 @@ Yes and no. As long as you do not change any of the following, you may edit the 
 - Rename the block `[[Readwise Highlights]]`.
 - Convert the block `[[Readwise Highlights]]` to a child block.
 
-The above is because `[[Readwise Highlights]]` is used when syncing new highlights to that source.
+The above is because `[[Readwise Highlights]]` is used when syncing new highlights to that source. If you have done any of the above, a new block called `[[Readwise Highlights]]` will be created and the highlights added under it. You will then need to clean it up after.
 
 ## Where does the Location link in each Kindle highlight take me?
 
