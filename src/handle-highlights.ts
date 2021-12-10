@@ -122,6 +122,9 @@ const getHighlightsForBook = async (
 
       // Check for if unable to find Readwise Highlights block
       if (!highlightsBlock[0]) {
+        console.log(
+          `${b.title} had changes made to its [[Readwise Highlights]] block.`
+        );
         const lastBlock = pageBlockTree[pageBlockTree.length - 1];
         highlightsBlock[0] = await logseq.Editor.insertBlock(
           lastBlock.uuid,
@@ -150,7 +153,9 @@ const getHighlightsForBook = async (
       );
     }
   }
-  logseq.App.showMsg('Highlights imported!');
+  logseq.App.showMsg(
+    'Highlights imported! If you made any changes to the [[Readwise Highlights]] block before you synced, you may need to revist those pages to remove duplicate higlights. Please refer to the console in Developer Tools for these pages. '
+  );
 
   // Reset progress bar
   width = 0;

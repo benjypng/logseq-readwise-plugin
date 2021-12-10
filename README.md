@@ -2,14 +2,14 @@
 
 > Installing the plugin from the martketplace now works! If you are changing from manually loading the plugin to using the one from the marketplace, please read the [instructions here](https://github.com/hkgnp/logseq-readwise-plugin#migrating-from-manual-loading-to-marketplace) to prevent synchronising of duplicate data.
 
-> If you have more than 1,000 sources, please update your plugin to the latest version (2.3). If you have tried to sync before, be sure to delete those files first, refreshing your graph and then trying again. Thank you for your patience!
-
 # Overview
 
 This is a simple Readwise plugin to:
 
 1. Pull in all your highlights from Readwise
 2. For subsequent pulls, it only pulls in those not in the graph
+
+There is now a [FAQ](https://github.com/hkgnp/logseq-readwise-plugin#detailed-instructions) that you may find helpful to read before you use this plugin.
 
 # Samples
 
@@ -106,13 +106,13 @@ Without clicking `Sync New Sources` button, the plugin will not automatically cr
 
 Unfortunately not. It will be technically challenging to look for that specific highlight within a page, and make changes to it without the possibility to accidentally removing edits made by the user.
 
-## Can I rename the page in Obsidian?
+## Can I rename the page in Logseq?
 
 Unfortunately not as well. The plugin uses the original name given to the source to find and add subsequent highlights. If you rename it, when there are new highlights, a new page will be created for the source (with the old name). Hence, you should only rename when you do not expect any more highlights from that source, e.g. a book that you know you will not make any more highlights for it.
 
 ## Can I edit the page that the plugin created for a source?
 
-Yes and no. As long as you do not change any of the following, you may edit the page, e.g. add in your own thoughts as child blocks under the highlights.
+Yes and no. As long as you **do not** change any of the below, you may edit the page, e.g. add in your own thoughts as child blocks under the highlights.
 
 - Rename the block `[[Readwise Highlights]]`.
 - Convert the block `[[Readwise Highlights]]` to a child block.
