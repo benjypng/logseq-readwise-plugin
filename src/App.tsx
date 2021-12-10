@@ -85,7 +85,8 @@ export default class App extends React.Component {
       // Filter out books where there are highlights newer than the last retrieved date
       const latestBookList = booklist.filter(
         (b) =>
-          new Date(b.updated) > new Date(logseq.settings['latestRetrieved'])
+          new Date(b.last_highlight_at) >
+          new Date(logseq.settings['latestRetrieved'])
       );
 
       this.setState({
