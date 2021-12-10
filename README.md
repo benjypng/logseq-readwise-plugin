@@ -139,3 +139,7 @@ _Adapted from [Readwise's help article for Obsidian](https://help.readwise.io/ar
 - [x] Account for cases that have more than 1000 cases.
 - [ ] Refactor code.
 - [ ] Will be incorporating the possibility of only pulling highlights for specific sources.
+
+# Credits
+
+Big thanks to [@MattHulse](https://github.com/MattHulse) for helping to contributing to the code (duplicate source with same name, but has no highlights)!
