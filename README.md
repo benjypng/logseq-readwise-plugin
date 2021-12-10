@@ -51,17 +51,15 @@ New highlights are found by comparing the date of the highlight against the date
 7. Restart Logseq.
 8. You can start to use the plugin after!
 
-### First time
+### First time (from the marketplace - preferred)
 
 1. Go to your [Readwise Access Token](https://readwise.io/access_token) page and obtain a new token. Keep this token somewhere safe.
-2. Download the latest release of the plugin [here](https://github.com/hkgnp/logseq-readwise-plugin/releases).
-3. Unzip the file to where you normally store your unpacked plugins.
-4. In Logseq, load the unpacked plugin.
-5. Click on the icon (📖) in the plugins bar.
-6. If you are using the plugin for the first time, do remember to click the button `Click here if you are using this plugin for the first time`.
-7. Key in the token that you obtained in (1) and click `Save Token`.
-8. Review the number of sources and highlights that you have.
-9. Click button to sync highlights.
+2. Download the logseq-readwise-plugin from the Logseq marketplace.
+3. Click on the icon (📖) in the plugins bar.
+4. If you are using the plugin for the first time, do remember to click the button `Click here if you are using this plugin for the first time`.
+5. Key in the token that you obtained in (1) and click `Save Token`.
+6. Review the number of sources and highlights that you have.
+7. Click button to sync highlights.
 
 ![](/screenshots/sync.png)
 

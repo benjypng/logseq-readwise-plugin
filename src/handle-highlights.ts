@@ -116,16 +116,18 @@ const getHighlightsForBook = async (
       );
     } else {
       // Insert only new highlights in Readwise Highlights block
-      const highlightsBlock = pageBlockTree.filter(
+      let highlightsBlock = pageBlockTree.filter(
         (b) => b.content == '## [[Readwise Highlights]]'
       );
 
       // Check for if unable to find Readwise Highlights block
-      if (!highlightsBlock) {
-        logseq.App.showMsg(
-          `Unable to find [[Readwise Highlights]] block for ${b.title}. Have you removed it by accident? Please check and re-sync again. You may need to remove the pages that have just been created/edited for this sync.`
+      if (!highlightsBlock[0]) {
+        const lastBlock = pageBlockTree[pageBlockTree.length - 1];
+        highlightsBlock[0] = await logseq.Editor.insertBlock(
+          lastBlock.uuid,
+          `## [[Readwise Highlights]]`,
+          { sibling: true }
         );
-        return;
       }
 
       await logseq.Editor.insertBatchBlock(
