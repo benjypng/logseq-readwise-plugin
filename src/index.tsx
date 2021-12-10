@@ -25,7 +25,7 @@ const main = () => {
 
   // Register UI
   logseq.App.registerUIItem('toolbar', {
-    key: 'logseq-todoist-plugin',
+    key: 'logseq-readwise-plugin',
     template: `
         <a data-on-click="show"
           class="button">

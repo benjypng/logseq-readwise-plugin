@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const getOrdinalNum = (n) => {
   return (
     n +
@@ -35,4 +37,42 @@ const sleep = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
-export default { getDateForPage, blockTitle, pageName, clearPage, sleep };
+const getHighlightsForBook = async (b, token) => {
+  const response = await axios({
+    method: 'get',
+    url: 'https://readwise.io/api/v2/highlights/',
+    headers: {
+      Authorization: `Token ${token}`,
+    },
+    params: {
+      book_id: b.id,
+    },
+  });
+
+  return response;
+};
+
+const subsequentSyncs = async (i, booklist, token, pageSize) => {
+  const response = await axios({
+    method: 'get',
+    url: `https://readwise.io/api/v2/books/?page=${i}`,
+    headers: {
+      Authorization: `Token ${token}`,
+    },
+    params: {
+      page_size: pageSize,
+    },
+  });
+
+  Array.prototype.push.apply(booklist, response.data.results);
+};
+
+export default {
+  getDateForPage,
+  blockTitle,
+  pageName,
+  clearPage,
+  sleep,
+  getHighlightsForBook,
+  subsequentSyncs,
+};

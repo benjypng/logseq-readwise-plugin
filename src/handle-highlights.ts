@@ -1,5 +1,4 @@
 import utils from './utils';
-import axios from 'axios';
 
 const getHighlightsForBook = async (
   latestBookList,
@@ -10,21 +9,6 @@ const getHighlightsForBook = async (
   coolingOffDiv
 ) => {
   console.log('Getting highlights');
-
-  const getHighlightsForBook = async (b) => {
-    const response = await axios({
-      method: 'get',
-      url: 'https://readwise.io/api/v2/highlights/',
-      headers: {
-        Authorization: `Token ${token}`,
-      },
-      params: {
-        book_id: b.id,
-      },
-    });
-
-    return response;
-  };
 
   // Go to each page that has a latest updated date and populate each page
   for (let b of latestBookList) {
@@ -44,7 +28,7 @@ const getHighlightsForBook = async (
     // Implement retry after if trying to get too many sources at one time.
     let highlightsForBook;
     try {
-      highlightsForBook = await getHighlightsForBook(b);
+      highlightsForBook = await utils.getHighlightsForBook(b, token);
     } catch (e) {
       console.log(e);
       coolingOffDiv.innerHTML =
@@ -52,7 +36,7 @@ const getHighlightsForBook = async (
       const retryAfter =
         parseInt(e.response.headers['retry-after']) * 1000 + 5000;
       await utils.sleep(retryAfter);
-      highlightsForBook = await getHighlightsForBook(b);
+      highlightsForBook = await utils.getHighlightsForBook(b, token);
       coolingOffDiv.innerHTML = '';
     }
 
@@ -136,7 +120,13 @@ const getHighlightsForBook = async (
         (b) => b.content == '## [[Readwise Highlights]]'
       );
 
-      const headerBlock = pageBlockTree[0];
+      // Check for if unable to find Readwise Highlights block
+      if (!highlightsBlock) {
+        logseq.App.showMsg(
+          `Unable to find [[Readwise Highlights]] block for ${b.title}. Have you removed it by accident?`
+        );
+        continue;
+      }
 
       await logseq.Editor.insertBatchBlock(
         highlightsBlock[0].uuid,
@@ -145,6 +135,8 @@ const getHighlightsForBook = async (
           sibling: false,
         }
       );
+
+      const headerBlock = pageBlockTree[0];
 
       await logseq.Editor.updateBlock(
         headerBlock['uuid'],

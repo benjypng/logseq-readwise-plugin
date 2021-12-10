@@ -26,21 +26,6 @@ export default class App extends React.Component {
   loadFromReadwise = async () => {
     console.log(logseq.settings['latestRetrieved']);
 
-    const subsequentSyncs = async (i, booklist) => {
-      const response = await axios({
-        method: 'get',
-        url: `https://readwise.io/api/v2/books/?page=${i}`,
-        headers: {
-          Authorization: `Token ${this.state.token}`,
-        },
-        params: {
-          page_size: pageSize,
-        },
-      });
-
-      Array.prototype.push.apply(booklist, response.data.results);
-    };
-
     this.setState({
       noOfBooks: '',
       noOfHighlights: '',
@@ -70,7 +55,7 @@ export default class App extends React.Component {
 
         for (let i = 2; i < noOfPages + 1; i++) {
           try {
-            subsequentSyncs(i, booklist);
+            utils.subsequentSyncs(i, booklist, this.state.token, pageSize);
           } catch (e) {
             // Implement retry after if trying to get too many sources at one time.
             console.log(e);
@@ -81,7 +66,7 @@ export default class App extends React.Component {
             await utils.sleep(retryAfter);
 
             // Execute subsequent sync
-            subsequentSyncs(i, booklist);
+            utils.subsequentSyncs(i, booklist, this.state.token, pageSize);
 
             // Reset notification
             document.getElementById('initialLoadWait').innerHTML = '';

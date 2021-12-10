@@ -138,5 +138,6 @@ _Adapted from [Readwise's help article for Obsidian](https://help.readwise.io/ar
 - [x] Change style of popup.
 - [x] Fix issue of pulling new highlights removing old blocks from existing pages.
 - [x] Fix source of non-Kindle highlights.
+- [x] Account for cases that have more than 1000 cases.
 - [ ] Refactor code.
 - [ ] Will be incorporating the possibility of only pulling highlights for specific sources.
