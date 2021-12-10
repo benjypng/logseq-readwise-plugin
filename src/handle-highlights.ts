@@ -123,9 +123,9 @@ const getHighlightsForBook = async (
       // Check for if unable to find Readwise Highlights block
       if (!highlightsBlock) {
         logseq.App.showMsg(
-          `Unable to find [[Readwise Highlights]] block for ${b.title}. Have you removed it by accident?`
+          `Unable to find [[Readwise Highlights]] block for ${b.title}. Have you removed it by accident? Please check and re-sync again. You may need to remove the pages that have just been created/edited for this sync.`
         );
-        continue;
+        return;
       }
 
       await logseq.Editor.insertBatchBlock(
