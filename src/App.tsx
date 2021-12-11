@@ -35,7 +35,7 @@ export default class App extends React.Component {
       errorLoading: false,
     });
 
-    const pageSize = 10;
+    const pageSize = 1000;
     try {
       const initialSync = await axios({
         method: 'get',
