@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const BASE_URL = "https://readwise.io/api/v2/";
+
 const getOrdinalNum = (n) => {
   return (
     n +
@@ -24,7 +26,7 @@ const blockTitle = () => {
     .substring(12, 17)}`;
 };
 
-const pageName = 'Readwise TOC';
+const pageName = () => {return 'Readwise TOC'};
 
 const clearPage = async (arr) => {
   for (let i of arr) {
@@ -37,35 +39,70 @@ const sleep = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
-const getHighlightsForBook = async (b, token) => {
+/**
+ * General purpose readwise request method.
+ * Make a readwise request of type 'method' at the specified url with the provided data
+ * 
+ * @param {String} method http method: GET, POST, PUT, PATCH, DELETE
+ * @param {String} url request url
+ * @param {Object} params data parameters
+ * @return {Object} response
+ */
+ const readwiseRequest = async (method, url, token, params) => {
   const response = await axios({
-    method: 'get',
-    url: 'https://readwise.io/api/v2/highlights/',
+    method: method,
+    url: url,
     headers: {
       Authorization: `Token ${token}`,
     },
-    params: {
-      book_id: b.id,
-    },
-  });
+    params: params,
+  });  
 
-  return response;
-};
+  return response.data;
+}
 
-const subsequentSyncs = async (i, booklist, token, pageSize) => {
-  const response = await axios({
-    method: 'get',
-    url: `https://readwise.io/api/v2/books/?page=${i}`,
-    headers: {
-      Authorization: `Token ${token}`,
-    },
-    params: {
-      page_size: pageSize,
-    },
-  });
+/**
+* Retrieve all of the available results of type 'resource'.
+* 
+* @param {String} resource [Readwise resource to retrieve. ie. books, highlights]
+* @param {String} token [Readwise API token]
+* @param {Object} params [Data object containing request parameters]
+* @return {Array} Collection of results where the type 'resource'
+*/
+const getAllResults = async (resource, token, params) => {
+  let results = [];
+  let url = BASE_URL + resource + "/";
+  let complete = false;
+  let num_tries = 0;
+  let max_tries = 10;
 
-  Array.prototype.push.apply(booklist, response.data.results);
-};
+  while(!complete && num_tries < max_tries) {
+      num_tries += 1;
+
+      try {
+          let response = await readwiseRequest('GET', url, token, params);
+          console.debug('Response:', response);
+
+          if (response.results != null) {
+              results.push(...response.results);
+          }
+
+          if (response.next == null) { 
+              console.debug("All done.");
+              complete = true;
+          } else {
+              console.debug("More to get...");
+              url = response.next;
+              params = null; // Params are already in the next url;
+          }
+
+      } catch (error) {
+          console.log('Error:', error);
+      }
+  }
+
+  return results;
+}
 
 export default {
   getDateForPage,
@@ -73,6 +110,6 @@ export default {
   pageName,
   clearPage,
   sleep,
-  getHighlightsForBook,
-  subsequentSyncs,
+  readwiseRequest,
+  getAllResults,
 };

@@ -12,7 +12,9 @@ export default class App extends React.Component {
     noOfHighlights: '',
     noOfNewSources: '',
     booklist: [],
+    highlightlist: [],
     latestBookList: [],
+    syncTime: '',
     sync: false,
     loaded: false,
     isRefreshing: false,
@@ -24,82 +26,45 @@ export default class App extends React.Component {
   };
 
   loadFromReadwise = async () => {
-    console.log(logseq.settings['latestRetrieved']);
+    const progressDiv = document.getElementById('progressDiv');
+
+    progressDiv.innerHTML = "Refreshing Sources....  This may take a minute...";
+
+    console.log(this.state.latestRetrieved);
 
     this.setState({
       noOfBooks: '',
       noOfHighlights: '',
       noOfNewSources: '',
       booklist: [],
+      highlightlist: [],
       latestBookList: [],
       errorLoading: false,
     });
 
-    const pageSize = 10;
+    let currentTime = new Date(Date.now()).toISOString();
+
+    const pageSize = 1000;
+    const lastRetrieved = new Date(this.state.latestRetrieved);
     try {
-      const initialSync = await axios({
-        method: 'get',
-        url: 'https://readwise.io/api/v2/books/',
-        headers: {
-          Authorization: `Token ${this.state.token}`,
-        },
-        params: {
-          page_size: pageSize,
-        },
-      });
+      let booklist = await utils.getAllResults('books', this.state.token, {page_size: pageSize, num_highlights__gt: 0, updated__gt: lastRetrieved});
 
-      let booklist: any[] = initialSync.data.results;
-
-      if (initialSync.data.count > pageSize) {
-        const noOfPages = Math.ceil(initialSync.data.count / pageSize);
-
-        for (let i = 2; i < noOfPages + 1; i++) {
-          try {
-            utils.subsequentSyncs(i, booklist, this.state.token, pageSize);
-          } catch (e) {
-            // Implement retry after if trying to get too many sources at one time.
-            console.log(e);
-            document.getElementById('initialLoadWait').innerHTML =
-              'You have more than 1,000 sources! Please wait while we retrieve them.';
-            const retryAfter =
-              parseInt(e.response.headers['retry-after']) * 1000 + 5000;
-            await utils.sleep(retryAfter);
-
-            // Execute subsequent sync
-            utils.subsequentSyncs(i, booklist, this.state.token, pageSize);
-
-            // Reset notification
-            document.getElementById('initialLoadWait').innerHTML = '';
-          }
-        }
-      }
-
-      const highlightsList = await axios({
-        method: 'get',
-        url: 'https://readwise.io/api/v2/highlights/',
-        headers: {
-          Authorization: `Token ${this.state.token}`,
-        },
-      });
-
-      // Filter out books where there are highlights newer than the last retrieved date
-      const latestBookList = booklist.filter(
-        (b) =>
-          new Date(b.last_highlight_at) >
-          new Date(logseq.settings['latestRetrieved'])
-      );
+      let highlightlist = await utils.getAllResults('highlights', this.state.token, {page_size: pageSize, updated__gt: lastRetrieved});
 
       this.setState({
-        noOfBooks: initialSync.data['count'],
+        noOfBooks: booklist.length,
         booklist: booklist,
-        noOfHighlights: highlightsList.data['count'],
-        noOfNewSources: latestBookList.length,
-        latestBookList: latestBookList,
+        highlightlist: highlightlist,
+        noOfHighlights: highlightlist.length,
+        noOfNewSources: booklist.length,
         loaded: true,
+        syncTime: currentTime,
       });
     } catch (e) {
       this.setState({ errorLoading: true });
     }
+
+    progressDiv.innerHTML = "";
   };
 
   syncReadwise = async () => {
@@ -112,19 +77,28 @@ export default class App extends React.Component {
       i = 1;
       const elemBar = document.getElementById('myProgress');
       const elemText = document.getElementById('textPercent');
-      const coolingOffDiv = document.getElementById('coolingOffDiv');
+      const progressDiv = document.getElementById('progressDiv');
       const width = 0;
 
-      const { latestBookList, token } = this.state;
+      const { booklist, highlightlist } = this.state;
 
       await handleHighlights.getHighlightsForBook(
-        latestBookList,
-        token,
+        booklist,
+        highlightlist,
         width,
         elemBar,
         elemText,
-        coolingOffDiv
+        progressDiv
       );
+
+      logseq.updateSettings({
+        // set latestRetrieved to the time we started the sync
+        latestRetrieved: this.state.syncTime 
+      });
+
+      this.setState({
+        latestRetrieved: this.state.syncTime
+      });
 
       await this.loadFromReadwise();
     }
@@ -262,12 +236,6 @@ export default class App extends React.Component {
 
           {/* Start sync row */}
           <div className="mt-3 border-black border-4 bg-white px-2 py-3 flex flex-col">
-            <div className="bg-white">
-              <p>
-                Syncing more than 20 sources will take a longer time because of
-                Readwise's API limits.
-              </p>
-            </div>
             <div className="my-2">
               {/* Only show when setState has completed. */}
               {this.state.loaded && !this.state.sync && (
@@ -289,7 +257,7 @@ export default class App extends React.Component {
                 </button>
               )}
 
-              <div id="coolingOffDiv" className="text-red-500 text-sm"></div>
+              <div id="progressDiv" className="text-blue-500 text-sm"></div>
 
               {/* Start progress bar */}
               <div className="relative pt-1 mt-3">

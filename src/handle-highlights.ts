@@ -1,49 +1,33 @@
 import utils from './utils';
 
 const getHighlightsForBook = async (
-  latestBookList,
-  token,
+  booklist,
+  highlightlist,
   width,
   elemBar,
   elemText,
-  coolingOffDiv
+  progressDiv
 ) => {
-  console.log('Getting highlights');
+  console.log('Processing highlights');
 
   // Go to each page that has a latest updated date and populate each page
-  for (let b of latestBookList) {
+  for (let b of booklist) {
     // Go to page
     logseq.App.pushState('page', { name: `${b.title} (Readwise)` });
     const currPage = await logseq.Editor.getCurrentPage();
     const pageBlockTree = await logseq.Editor.getCurrentPageBlocksTree();
 
     console.log(`Updating ${b.title}`);
+    progressDiv.innerHTML = `Updating ${b.title} ...`;
 
     // Change progress bar
-    const interval = 100 / latestBookList.length;
+    const interval = 100 / booklist.length;
     width = width + interval;
     elemBar.style.width = width + '%';
     elemText.innerHTML = parseFloat(width).toFixed(2) + '%';
 
-    // Implement retry after if trying to get too many sources at one time.
-    let highlightsForBook;
-    try {
-      highlightsForBook = await utils.getHighlightsForBook(b, token);
-    } catch (e) {
-      console.log(e);
-      coolingOffDiv.innerHTML =
-        'Please wait for Readwise cooling off to complete.';
-      const retryAfter =
-        parseInt(e.response.headers['retry-after']) * 1000 + 5000;
-      await utils.sleep(retryAfter);
-      highlightsForBook = await utils.getHighlightsForBook(b, token);
-      coolingOffDiv.innerHTML = '';
-    }
-
-    // Filter out only latest highlights
-    const latestHighlights = highlightsForBook.data.results.filter(
-      (b) => new Date(b.updated) > new Date(logseq.settings['latestRetrieved'])
-    );
+    // get highlights for this book from the highlight list
+    let latestHighlights = highlightlist.filter(highlight => highlight.book_id === b.id);
 
     if (latestHighlights.length === 0) {
       console.log("No highlights found for '" + b.title + "'");
@@ -166,12 +150,7 @@ const getHighlightsForBook = async (
   width = 0;
   elemBar.style.width = width + '%';
   elemText.innerHTML = parseFloat(width).toFixed(2) + '%';
-
-  if (latestBookList.length > 0) {
-    logseq.updateSettings({
-      latestRetrieved: latestBookList[0].last_highlight_at,
-    });
-  }
+  progressDiv.innerHTML = "";
 };
 
 export default { getHighlightsForBook };
