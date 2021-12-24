@@ -113,8 +113,8 @@ const getHighlightsForBook = async (
         );
       } else {
         await logseq.Editor.insertBatchBlock(
-          highlightsBlock.uuid,
-          latestHighlightsArr.sort(),
+          highlightsBlock,
+          latestHighlightsArr.reverse(),
           {
             sibling: false,
           }
@@ -148,13 +148,29 @@ const getHighlightsForBook = async (
         );
       }
 
-      await logseq.Editor.insertBatchBlock(
-        highlightsBlock[0].uuid,
-        latestHighlightsArr,
-        {
-          sibling: false,
-        }
-      );
+      if (!logseq.settings.sortRecentFirst) {
+        const getChildren = await logseq.Editor.getBlock(
+          highlightsBlock[0].uuid,
+          { includeChildren: true }
+        );
+
+        const lastBlockOfChildren =
+          getChildren.children[getChildren.children.length - 1];
+
+        await logseq.Editor.insertBatchBlock(
+          lastBlockOfChildren['uuid'],
+          latestHighlightsArr.reverse(),
+          {
+            sibling: true,
+          }
+        );
+      } else {
+        await logseq.Editor.insertBatchBlock(
+          highlightsBlock[0].uuid,
+          latestHighlightsArr,
+          { sibling: false }
+        );
+      }
 
       const headerBlock = pageBlockTree[0];
 
