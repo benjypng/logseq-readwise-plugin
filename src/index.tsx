@@ -12,7 +12,6 @@ const main = () => {
     document.getElementById('app')
   );
 
-  // Create UI for inserting env variables in settings
   const createModel = () => {
     return {
       show() {

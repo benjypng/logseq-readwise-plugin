@@ -17,6 +17,7 @@ export default class App extends React.Component {
     loaded: false,
     isRefreshing: false,
     errorLoading: '',
+    sortRecentFirst: logseq.settings['sortRecentFirst'],
   };
 
   componentDidMount = async () => {
@@ -149,6 +150,25 @@ export default class App extends React.Component {
     });
   };
 
+  // HANDLE CHECKBOX
+  handleCheckbox = (e: any) => {
+    if (e.target.checked) {
+      this.setState({
+        sortRecentFirst: true,
+      });
+      logseq.updateSettings({ sortRecentFirst: true });
+    } else if (!e.target.checked) {
+      this.setState({
+        sortRecentFirst: false,
+      });
+      logseq.updateSettings({ sortRecentFirst: false });
+    }
+
+    // logseq.updateSettings({
+    //   sortRecentFirst: this.state.sortRecentFirst,
+    // });
+  };
+
   saveToken = async () => {
     await logseq.updateSettings({ token: this.state.token });
     await this.loadFromReadwise();
@@ -255,6 +275,18 @@ export default class App extends React.Component {
                     Refresh
                   </button>
                 </span>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <div className="p-2 bg-white items-center text-black flex font-semibold">
+                <input
+                  className="p-2 w-5 h-5"
+                  type="checkbox"
+                  checked={this.state.sortRecentFirst}
+                  onChange={this.handleCheckbox}
+                />
+                <p className="ml-2">Sort recent highlights first</p>
               </div>
             </div>
           </div>

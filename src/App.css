@@ -597,6 +597,10 @@ video {
   margin-bottom: 0.5rem;
 }
 
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
 .block {
   display: block;
 }
@@ -613,8 +617,16 @@ video {
   height: 0.5rem;
 }
 
+.h-5 {
+  height: 1.25rem;
+}
+
 .w-0 {
   width: 0px;
+}
+
+.w-5 {
+  width: 1.25rem;
 }
 
 .w-60 {
@@ -915,12 +927,6 @@ video {
   --tw-sepia: var(--tw-empty,/*!*/ /*!*/);
   --tw-drop-shadow: var(--tw-empty,/*!*/ /*!*/);
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-}
-
-#myProgress {
-  width: 1%;
-  height: 30px;
-  background-color: green;
 }
 
 @media (min-width: 640px) {

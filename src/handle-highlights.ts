@@ -103,13 +103,23 @@ const getHighlightsForBook = async (
         { sibling: true }
       );
 
-      await logseq.Editor.insertBatchBlock(
-        highlightsBlock.uuid,
-        latestHighlightsArr,
-        {
-          sibling: false,
-        }
-      );
+      if (logseq.settings.sortRecentFirst) {
+        await logseq.Editor.insertBatchBlock(
+          highlightsBlock.uuid,
+          latestHighlightsArr,
+          {
+            sibling: false,
+          }
+        );
+      } else {
+        await logseq.Editor.insertBatchBlock(
+          highlightsBlock.uuid,
+          latestHighlightsArr.sort(),
+          {
+            sibling: false,
+          }
+        );
+      }
 
       await logseq.Editor.updateBlock(
         headerBlock.uuid,
