@@ -112,8 +112,10 @@ const getHighlightsForBook = async (
           }
         );
       } else {
+        console.log(highlightsBlock);
+        console.log(latestHighlightsArr.reverse());
         await logseq.Editor.insertBatchBlock(
-          highlightsBlock,
+          highlightsBlock.uuid,
           latestHighlightsArr.reverse(),
           {
             sibling: false,
