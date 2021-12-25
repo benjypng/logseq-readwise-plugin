@@ -25,6 +25,10 @@ There is now a [FAQ](https://github.com/hkgnp/logseq-readwise-plugin#detailed-in
 
 ![](/screenshots/sample-tweetthread.png)
 
+# Random Highlights
+
+![](/screenshots/demo.gif)
+
 # Disclaimer
 
 If you have multiple sources (e.g. books, tweets, instapaper) and thousands of highlights, the initial pull can take a while. You will have a progress bar to keep track on what's happening, and can terminate the pull process at any time.
