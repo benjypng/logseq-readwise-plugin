@@ -1,8 +1,9 @@
 import React from 'react';
 import './App.css';
 import axios from 'axios';
-import handleHighlights from './handle-highlights';
+import handleHighlights from './handleHighlights';
 import utils from './utils';
+import getRandomHighlight from './randomHighlight';
 
 export default class App extends React.Component {
   state = {
@@ -340,6 +341,19 @@ export default class App extends React.Component {
             </div>
           </div>
           {/* End sync row */}
+          <div className="mt-3">
+            <p className="mb-2 text-red-900">
+              Experimental: The below is only tested for tweet and kindle
+              sources. It also assumes that your other pages do not make
+              reference to [[kindle]] or [[Readwise Highlights]].
+            </p>
+            <button
+              onClick={getRandomHighlight}
+              className="p-3 bg-red-600 text-white"
+            >
+              Random Highlight
+            </button>
+          </div>
         </div>
       </div>
     );
