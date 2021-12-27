@@ -3,7 +3,7 @@ import './App.css';
 import axios from 'axios';
 import handleHighlights from './handleHighlights';
 import utils from './utils';
-import getRandomHighlight from './randomHighlight';
+import highlight from './randomHighlight';
 
 export default class App extends React.Component {
   state = {
@@ -185,6 +185,10 @@ export default class App extends React.Component {
     console.log(this.state.latestRetrieved);
   };
 
+  scrollToRandomHighlight = async () => {
+    await highlight.scrollToRandomHighlight();
+  };
+
   render() {
     return (
       <div className="flex justify-center">
@@ -348,7 +352,7 @@ export default class App extends React.Component {
               reference to [[kindle]] or [[Readwise Highlights]].
             </p>
             <button
-              onClick={getRandomHighlight}
+              onClick={this.scrollToRandomHighlight}
               className="p-3 bg-red-600 text-white"
             >
               Random Highlight
