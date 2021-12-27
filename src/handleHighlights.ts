@@ -10,6 +10,9 @@ const getHighlightsForBook = async (
 ) => {
   console.log('Getting highlights');
 
+  const userConfigs = await logseq.App.getUserConfigs();
+  const preferredDateFormat: string = userConfigs.preferredDateFormat;
+
   // Go to each page that has a latest updated date and populate each page
   for (let b of latestBookList) {
     // Go to page
@@ -58,14 +61,20 @@ const getHighlightsForBook = async (
                 location:: [${h.location}](kindle://book?action=open&asin=${
           b.asin
         }&location=${h.location})
-                on:: [[${utils.getDateForPage(new Date(h.highlighted_at))}]]
+                on:: [[${utils.getDateForPage(
+                  new Date(h.highlighted_at),
+                  preferredDateFormat
+                )}]]
                 `,
       }));
     } else {
       latestHighlightsArr = latestHighlights.map((h) => ({
         content: `${h.text}
                 link:: [${h.url}](${h.url})
-                on:: [[${utils.getDateForPage(new Date(h.highlighted_at))}]]
+                on:: [[${utils.getDateForPage(
+                  new Date(h.highlighted_at),
+                  preferredDateFormat
+                )}]]
                 `,
       }));
     }
@@ -84,7 +93,9 @@ const getHighlightsForBook = async (
       if (latestHighlights.length === 0) {
         await logseq.Editor.updateBlock(
           headerBlock.uuid,
-          `As of ${utils.blockTitle()}, there are no new highlights in this book.`
+          `As of ${utils.blockTitle(
+            preferredDateFormat
+          )}, there are no new highlights in this book.`
         );
         continue;
       }
@@ -123,7 +134,7 @@ const getHighlightsForBook = async (
 
       await logseq.Editor.updateBlock(
         headerBlock.uuid,
-        `retrieved:: ${utils.blockTitle()}
+        `retrieved:: ${utils.blockTitle(preferredDateFormat)}
               author:: [[${b.author}]]
               category:: [[${b.category}]]
               source:: [[${b.source}]]
@@ -176,7 +187,7 @@ const getHighlightsForBook = async (
 
       await logseq.Editor.updateBlock(
         headerBlock['uuid'],
-        `retrieved:: ${utils.blockTitle()}
+        `retrieved:: ${utils.blockTitle(preferredDateFormat)}
               author:: [[${b.author}]]
               category:: [[${b.category}]]
               source:: [[${b.source}]]

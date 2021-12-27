@@ -9,17 +9,38 @@ const getOrdinalNum = (n) => {
   );
 };
 
-const getDateForPage = (d) => {
+const getDateForPage = (d, preferredDateFormat: string) => {
   const getYear = d.getFullYear();
   const getMonth = d.toString().substring(4, 7);
+  const getMonthNumber = d.getMonth() + 1;
   const getDate = d.getDate();
 
-  return `${getMonth} ${getOrdinalNum(getDate)}, ${getYear}`;
+  if (preferredDateFormat === 'MMM do yyyy') {
+    return `${getMonth} ${getOrdinalNum(getDate)}, ${getYear}`;
+  } else if (
+    preferredDateFormat.includes('yyyy') &&
+    preferredDateFormat.includes('MM') &&
+    preferredDateFormat.includes('dd') &&
+    ('-' || '_' || '/')
+  ) {
+    var mapObj = {
+      yyyy: getYear,
+      dd: ('0' + getDate).slice(-2),
+      MM: ('0' + getMonthNumber).slice(-2),
+    };
+    let dateStr = preferredDateFormat;
+    dateStr = dateStr.replace(/yyyy|dd|MM/gi, function (matched) {
+      return mapObj[matched];
+    });
+    return dateStr;
+  } else {
+    return `${getMonth} ${getOrdinalNum(getDate)}, ${getYear}`;
+  }
 };
 
-const blockTitle = () => {
+const blockTitle = (preferredDateFormat) => {
   const currDate = new Date();
-  return `[[${getDateForPage(currDate)}]], ${currDate
+  return `[[${getDateForPage(currDate, preferredDateFormat)}]], ${currDate
     .toLocaleString()
     .substring(12, 17)}`;
 };
