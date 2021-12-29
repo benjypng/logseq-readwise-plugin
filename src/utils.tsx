@@ -40,9 +40,12 @@ const getDateForPage = (d, preferredDateFormat: string) => {
 
 const blockTitle = (preferredDateFormat) => {
   const currDate = new Date();
-  return `[[${getDateForPage(currDate, preferredDateFormat)}]], ${currDate
-    .toLocaleString()
-    .substring(12, 17)}`;
+
+  // return `[[${getDateForPage(currDate, preferredDateFormat)}]], ${currDate
+  //   .toLocaleString()
+  //   .substring(12, 17)}`;
+
+  return `[[${getDateForPage(currDate, preferredDateFormat)}]]`;
 };
 
 const pageName = 'Readwise TOC';
