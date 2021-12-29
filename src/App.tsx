@@ -23,6 +23,9 @@ export default class App extends React.Component {
 
   componentDidMount = async () => {
     this.loadFromReadwise();
+    logseq.updateSettings({
+      retrievedTime: true,
+    });
   };
 
   loadFromReadwise = async () => {
