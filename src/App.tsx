@@ -350,13 +350,11 @@ export default class App extends React.Component {
           {/* End sync row */}
           <div className="mt-3">
             <p className="mb-2 text-red-900">
-              Experimental: The below is only tested for tweet and kindle
-              sources. It also assumes that your other pages do not make
-              reference to [[kindle]] or [[Readwise Highlights]].
+              Get a random highlight from all your pulled highlights!
             </p>
             <button
               onClick={this.scrollToRandomHighlight}
-              className="p-3 bg-red-600 text-white"
+              className="p-3 bg-green-600 text-white"
             >
               Random Highlight
             </button>
