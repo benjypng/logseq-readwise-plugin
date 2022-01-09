@@ -15,12 +15,18 @@ const getHighlightsForBook = async (
 
   // Go to each page that has a latest updated date and populate each page
   for (let b of latestBookList) {
-    // Go to page
-    logseq.App.pushState('page', { name: `${b.title} (Readwise)` });
-    const currPage = await logseq.Editor.getCurrentPage();
-    const pageBlockTree = await logseq.Editor.getCurrentPageBlocksTree();
+    // remove speccial characters
+    const bookTitle = b.title.replace(
+      /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,
+      ''
+    );
 
+    // Go to page
+    logseq.App.pushState('page', { name: `${bookTitle} (Readwise)` });
     console.log(`Updating ${b.title}`);
+    const currPage = await logseq.Editor.getCurrentPage();
+    console.log(currPage);
+    const pageBlockTree = await logseq.Editor.getCurrentPageBlocksTree();
 
     // Change progress bar
     const interval = 100 / latestBookList.length;
