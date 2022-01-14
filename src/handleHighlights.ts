@@ -13,6 +13,11 @@ const getHighlightsForBook = async (
   const userConfigs = await logseq.App.getUserConfigs();
   const preferredDateFormat: string = userConfigs.preferredDateFormat;
 
+  const prepareTags = (t: any[]) => {
+    const tagArr = t.map((t) => `[[${t.name}]]`);
+    return tagArr.join(', ');
+  };
+
   // Go to each page that has a latest updated date and populate each page
   for (let b of latestBookList) {
     // remove speccial characters
@@ -71,6 +76,7 @@ const getHighlightsForBook = async (
                   new Date(h.highlighted_at),
                   preferredDateFormat
                 )}]]
+                tags:: ${prepareTags(h.tags)}
                 `,
       }));
     } else {
@@ -81,6 +87,7 @@ const getHighlightsForBook = async (
                   new Date(h.highlighted_at),
                   preferredDateFormat
                 )}]]
+                tags:: ${prepareTags(h.tags)}
                 `,
       }));
     }
@@ -144,6 +151,7 @@ const getHighlightsForBook = async (
               author:: [[${b.author}]]
               category:: [[${b.category}]]
               source:: [[${b.source}]]
+              tags:: ${prepareTags(b.tags)}
               `
       );
     } else {
