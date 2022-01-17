@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const getOrdinalNum = (n) => {
+onst getOrdinalNum = (n) => {
   return (
     n +
     (n > 0
@@ -42,8 +42,7 @@ const blockTitle = (preferredDateFormat) => {
   const currDate = new Date();
   if (logseq.settings.retrievedTime) {
     return `[[${getDateForPage(currDate, preferredDateFormat)}]], ${currDate
-      .toLocaleString()
-      .substring(12, 17)}`;
+      .toLocaleTimeString()}`;
   } else {
     return `[[${getDateForPage(currDate, preferredDateFormat)}]]`;
   }
