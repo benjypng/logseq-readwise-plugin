@@ -64,6 +64,12 @@ const getHighlightsForBook = async (
       continue;
     }
 
+    // Get custom properties
+    const customPropertiesStr = logseq.settings['customSyncProperties'].reduce((str, { prop, value }) => {
+      return `${ str }
+      ${prop}:: ${value}`;
+    }, '');
+
     // Prepare latest highlights for logeq insertion
     let latestHighlightsArr;
     if (b.source === 'kindle') {
@@ -148,11 +154,12 @@ const getHighlightsForBook = async (
       await logseq.Editor.updateBlock(
         headerBlock.uuid,
         `retrieved:: ${utils.blockTitle(preferredDateFormat)}
-              author:: [[${b.author}]]
-              category:: [[${b.category}]]
-              source:: [[${b.source}]]
-              tags:: ${prepareTags(b.tags)}
-              `
+          author:: [[${b.author}]]
+          category:: [[${b.category}]]
+          source:: [[${b.source}]]
+          ${ customPropertiesStr }
+          tags:: ${prepareTags(b.tags)}
+          `
       );
     } else {
       // Insert only new highlights in Readwise Highlights block
@@ -205,6 +212,7 @@ const getHighlightsForBook = async (
               author:: [[${b.author}]]
               category:: [[${b.category}]]
               source:: [[${b.source}]]
+              ${customPropertiesStr}
               `
       );
     }

@@ -19,6 +19,7 @@ export default class App extends React.Component {
     isRefreshing: false,
     errorLoading: '',
     sortRecentFirst: logseq.settings['sortRecentFirst'],
+    customSyncProperties: logseq.settings['customSyncProperties'], // retrieve existing from logseq
   };
 
   componentDidMount = async () => {
@@ -173,6 +174,33 @@ export default class App extends React.Component {
     // });
   };
 
+  handleAddProperty = (e: any) => {
+    const fresh = { prop: null, value: null };
+    const updated = [...this.state.customSyncProperties, fresh];
+    this.setState({ customSyncProperties: updated });
+  }
+
+  handlePropertySubmit = (e: any) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form);
+    const extractRegex = /(\w+)-(\d+)/gi;
+    const inputs = [...formData.entries()].reduce((acc, [name, value]) => {
+      const match = extractRegex.exec(name);
+      if (match !== null) {
+        const [_, prop, idx] = match;
+        if (!acc[idx]) acc[idx] = {};
+        acc[idx][prop] = value; // prop should only ever be 'prop' or 'value'
+      }
+      return acc;
+    }, []);
+    // [{name: ..., value:...}, ...]
+
+    this.setState({ customSyncProperties: inputs });
+    logseq.updateSettings({ customSyncProperties: output });
+  }
+
   saveToken = async () => {
     await logseq.updateSettings({ token: this.state.token });
     await this.loadFromReadwise();
@@ -295,6 +323,54 @@ export default class App extends React.Component {
                   onChange={this.handleCheckbox}
                 />
                 <p className="ml-2">Sort recent highlights first</p>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <div className="p-2 bg-white text-black flex font-semibold">
+                <form name="custom-properties" onSubmit={this.handlePropertySubmit}>  
+                  <ul className="list-none list-outside" >
+                    {
+                      this.state.customSyncProperties.map(({ prop, value }, idx: number) => (
+                        <li>
+                          <label htmlFor={`prop-${idx}`}>
+                            Property Name:
+                            <input className="p-2 w-5 h-5"
+                              id={`prop-${idx}`}
+                              type="text"
+                              name={`prop-${idx}`}
+                              value={prop}
+                            />
+                          </label>
+                          <label htmlFor={`value-${idx}`}>
+                            Property Value:
+                            <input className="p-2 w-5 h-5"
+                              id={`value-${idx}`}
+                              type="text"
+                              name={`value-${idx}`}
+                              value={value}
+                            />
+                          </label>
+                        </li>
+                      ))
+                    }
+                  </ul>
+                  <div>
+                    <label htmlFor="add-custom-property">
+                      <button className=""
+                        type="button"
+                        id="add-custom-property"
+                        onClick={this.handleAddProperty}
+                      >Add property</button>
+                    </label>
+                    <label htmlFor="save-custom-properties">
+                      <button className=""
+                        type="submit"
+                        id="save-custom-properties"
+                      >Save</button>
+                    </label>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
