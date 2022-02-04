@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import axios from 'axios';
 import handleHighlights from './handleHighlights';
 import utils from './utils';

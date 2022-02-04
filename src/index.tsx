@@ -2,10 +2,21 @@ import '@logseq/libs';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
+import './App.css';
 import highlight from './randomHighlight';
+import { bookView } from './bookView';
+
+// Generate unique identifier
+const uniqueIdentifier = () =>
+  Math.random()
+    .toString(36)
+    .replace(/[^a-z]+/g, '');
 
 const main = async () => {
   console.log('Readwise plugin loaded');
+
+  bookView();
+
   ReactDOM.render(
     <React.StrictMode>
       <App />
@@ -25,12 +36,19 @@ const main = async () => {
   };
 
   // Insert renderer upon slash command
-  logseq.Editor.registerSlashCommand('random highlight', async () => {
+  logseq.Editor.registerSlashCommand('Random highlight', async () => {
     const highlight = await randomHighlight();
 
     await logseq.Editor.insertAtEditingCursor(
       `> **${highlight.pageName}**
       ${highlight.content}`
+    );
+  });
+
+  // Insert book renderer
+  logseq.Editor.registerSlashCommand('Book renderer', async () => {
+    await logseq.Editor.insertAtEditingCursor(
+      `{{renderer :bookRenderer_${uniqueIdentifier()}}}`
     );
   });
 
