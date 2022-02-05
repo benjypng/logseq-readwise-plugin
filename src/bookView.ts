@@ -49,12 +49,15 @@ export const bookView = () => {
 
     let html: string = '';
     for (let i = 0; i < bookPropertyList.length; i++) {
-      const { author, category, source } = bookPropertyList[i].properties;
+      const { author, source } = bookPropertyList[i].properties;
+      let { imageUrl } = bookPropertyList[i];
+      if (imageUrl.includes('_SL200_.') || imageUrl.includes('_SY160.')) {
+        imageUrl = imageUrl.replace('_SL200_.', '');
+        imageUrl = imageUrl.replace('_SY160.', '');
+      }
 
       html += `<div class="card" data-on-click="goToPage${i}">
-                    <div class="image" style="background-image: url('${
-                      bookPropertyList[i].imageUrl
-                    }')">              
+                    <div class="image" style="background-image: url('${imageUrl}')">              
                     <p class="source">${source.substring(
                       2,
                       source.length - 2
@@ -82,6 +85,7 @@ export const bookView = () => {
             flex-wrap: wrap;
             gap: 40px;
             background-color: #eee;
+            border-radius: 8px;
           }
     
           .card {
