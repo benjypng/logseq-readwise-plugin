@@ -39,7 +39,8 @@ const getHighlightsForBook = async (
     if(preferredFormat==="markdown"){
       return `[${text}](${link})`;
     }if(preferredFormat==="org"){
-      return `[[${link}][${text}]]`;
+      // return `[[${link}][${text}]]`;
+      return `${link}`; // for now see bug https://github.com/logseq/logseq/issues/4191
     }
   }
   function insertImage(text,link){
