@@ -12,12 +12,43 @@ const getHighlightsForBook = async (
 
   const userConfigs = await logseq.App.getUserConfigs();
   const preferredDateFormat: string = userConfigs.preferredDateFormat;
+  const preferredFormat: string = userConfigs.preferredFormat;
 
   const prepareTags = (t: any[]) => {
     const tagArr = t.map((t) => `[[${t.name}]]`);
     return tagArr.join(', ');
   };
 
+  function addProperty(key,value){
+    if(preferredFormat==="markdown"){
+      return `${key}:: ${value}`;
+    }if(preferredFormat==="org"){
+      return `#+${key}: ${value}`;
+    }
+  }
+
+  function getHeading(h){
+    if(preferredFormat==="markdown"){
+      return `## [[${h}]]`;
+    }if(preferredFormat==="org"){
+      return `[[${h}]]`;
+    }
+  }
+
+  function createLink(text,link){
+    if(preferredFormat==="markdown"){
+      return `[${text}](${link})`;
+    }if(preferredFormat==="org"){
+      return `[[${link}][${text}]]`;
+    }
+  }
+  function insertImage(text,link){
+    if(preferredFormat==="markdown"){
+      return `![${text}](${link})`;
+    }if(preferredFormat==="org"){
+      return `[[${link}][${text}]]`;
+    }
+  }
   // Go to each page that has a latest updated date and populate each page
   for (let b of latestBookList) {
     // remove speccial characters
@@ -68,27 +99,24 @@ const getHighlightsForBook = async (
     let latestHighlightsArr;
     if (b.source === 'kindle') {
       latestHighlightsArr = latestHighlights.map((h) => ({
-        content: `${h.text}
-                location:: [${h.location}](kindle://book?action=open&asin=${
-          b.asin
-        }&location=${h.location})
-                on:: [[${utils.getDateForPage(
-                  new Date(h.highlighted_at),
+        content: `${h.text}`,
+        properties: {'location': createLink(h.location,`kindle://book?action=open&asin=${
+                  b.asin
+                }&location=${h.location}`),
+                'on':`[[${utils.getDateForPage(new Date(h.highlighted_at),
                   preferredDateFormat
-                )}]]
-                tags:: ${prepareTags(h.tags)}
-                `,
+                )}]]`,
+                'tags':`${prepareTags(h.tags)}`
+        },
       }));
     } else {
       latestHighlightsArr = latestHighlights.map((h) => ({
-        content: `${h.text}
-                link:: [${h.url}](${h.url})
-                on:: [[${utils.getDateForPage(
-                  new Date(h.highlighted_at),
-                  preferredDateFormat
-                )}]]
-                tags:: ${prepareTags(h.tags)}
-                `,
+        content: `${h.text}`,
+        properties: {
+        'link':createLink(h.url,h.url), 
+        'on':`[[${utils.getDateForPage(new Date(h.highlighted_at),preferredDateFormat)}]]`,
+        'tags':`${prepareTags(h.tags)}`
+      }
       }));
     }
 
@@ -116,14 +144,14 @@ const getHighlightsForBook = async (
       // Insert image
       const imageBlock = await logseq.Editor.insertBlock(
         headerBlock.uuid,
-        `![book_image](${b.cover_image_url})`,
+        insertImage('book_image',b.cover_image_url),
         { sibling: true }
       );
 
       // Insert highlights block
       const highlightsBlock = await logseq.Editor.insertBlock(
         imageBlock.uuid,
-        `## [[Readwise Highlights]]`,
+        getHeading('Readwise Highlights'),
         { sibling: true }
       );
 
@@ -147,17 +175,17 @@ const getHighlightsForBook = async (
 
       await logseq.Editor.updateBlock(
         headerBlock.uuid,
-        `retrieved:: ${utils.blockTitle(preferredDateFormat)}
-              author:: [[${b.author}]]
-              category:: [[${b.category}]]
-              source:: [[${b.source}]]
-              tags:: ${prepareTags(b.tags)}
+        `${addProperty('retrieved', `${utils.blockTitle(preferredDateFormat)}`)}
+         ${addProperty('author', `[[${b.author}]]`)}
+         ${addProperty('category', `[[${b.category}]]`)}
+         ${addProperty('source', `[[${b.source}]]`)}
+         ${addProperty('tags', prepareTags(b.tags))}
               `
       );
     } else {
       // Insert only new highlights in Readwise Highlights block
       let highlightsBlock = pageBlockTree.filter(
-        (b) => b.content == '## [[Readwise Highlights]]'
+        (b) => b.content == getHeading('Readwise Highlights')
       );
 
       // Check for if unable to find Readwise Highlights block
@@ -168,7 +196,7 @@ const getHighlightsForBook = async (
         const lastBlock = pageBlockTree[pageBlockTree.length - 1];
         highlightsBlock[0] = await logseq.Editor.insertBlock(
           lastBlock.uuid,
-          `## [[Readwise Highlights]]`,
+          getHeading('Readwise Highlights'),
           { sibling: true }
         );
       }
@@ -201,11 +229,12 @@ const getHighlightsForBook = async (
 
       await logseq.Editor.updateBlock(
         headerBlock['uuid'],
-        `retrieved:: ${utils.blockTitle(preferredDateFormat)}
-              author:: [[${b.author}]]
-              category:: [[${b.category}]]
-              source:: [[${b.source}]]
-              `
+        `${addProperty('retrieved', `${utils.blockTitle(preferredDateFormat)}`)}
+        ${addProperty('author', `[[${b.author}]]`)}
+        ${addProperty('category', `[[${b.category}]]`)}
+        ${addProperty('source', `[[${b.source}]]`)}
+        ${addProperty('tags', prepareTags(b.tags))}
+        `
       );
     }
   }
