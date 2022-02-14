@@ -1,3 +1,5 @@
+> README below is outdated since the major change on 14/2/2022. Pending a rewrite.
+
 > Supports multiple date formats, as long as it has "yyyy", "dd", "MM", in addition to the default "MMM do yyyy". Currently does not support other formats, e.g. "MMMM" or "E"
 
 > Installing the plugin from the martketplace now works! If you are changing from manually loading the plugin to using the one from the marketplace, please read the [instructions here](https://github.com/hkgnp/logseq-readwise-plugin#migrating-from-manual-loading-to-marketplace) to prevent synchronising of duplicate data.

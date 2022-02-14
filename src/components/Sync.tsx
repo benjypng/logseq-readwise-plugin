@@ -29,6 +29,7 @@ const Sync = (props: {
   } = props;
 
   const [progressPercentage, setProgressPercentage] = useState(0);
+  const [coolingOff, setCoolingOff] = useState(false);
 
   const { customTitle, metaData, height, width, sectionHeader } =
     logseq.settings.template;
@@ -49,13 +50,19 @@ const Sync = (props: {
 
     // Handle progress bar
     // If there are 200 books, each interval will be 0.5
-    const interval = 100 / bookList.length;
+    const interval: number = parseFloat((100 / bookList.length).toFixed(2));
 
     for (const b of bookList) {
-      setProgressPercentage(progressPercentage + interval);
+      setProgressPercentage(
+        (progressPercentage) => progressPercentage + interval
+      );
 
       // Get highlights for book
-      const bookHighlights = await getHighlightsForBook(b.id, token);
+      const bookHighlights = await getHighlightsForBook(
+        b.id,
+        token,
+        setCoolingOff
+      );
 
       // Filter only the latest highlights
       const latestHighlights = bookHighlights.data.results.filter(
@@ -247,7 +254,12 @@ const Sync = (props: {
           </button>
         )}
 
-        <div id="coolingOffDiv" className="text-red-500 text-sm"></div>
+        {/* Only show when cooling off */}
+        {coolingOff && (
+          <p className="text-red-400 font-bold text-sm">
+            Please wait for Readwise's cooling off period to lapse.
+          </p>
+        )}
 
         {/* Start progress bar */}
         <div className="relative pt-1 mt-3">

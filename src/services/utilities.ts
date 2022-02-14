@@ -123,7 +123,11 @@ export const loadFromReadwise = async (
   }
 };
 
-export const getHighlightsForBook = async (id: number, token: string) => {
+export const getHighlightsForBook = async (
+  id: number,
+  token: string,
+  setCoolingOff: Function
+) => {
   let response: any;
   try {
     response = await axios({
@@ -138,9 +142,18 @@ export const getHighlightsForBook = async (id: number, token: string) => {
     });
   } catch (e) {
     console.log(e);
+
+    if (e.response.status === 429) {
+      setCoolingOff(true);
+    }
+
     const retryAfter =
       parseInt(e.response.headers['retry-after']) * 1000 + 5000;
+
     await sleep(retryAfter);
+
+    console.log('Trying a second time...');
+
     response = await axios({
       method: 'get',
       url: 'https://readwise.io/api/v2/highlights/',
@@ -151,6 +164,8 @@ export const getHighlightsForBook = async (id: number, token: string) => {
         book_id: id,
       },
     });
+
+    setCoolingOff(false);
   }
 
   return response;
