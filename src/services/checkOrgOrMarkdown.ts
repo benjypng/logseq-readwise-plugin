@@ -23,9 +23,9 @@ export const returnKindleHighlights = (
     };
   } else if (orgOrMarkdown === 'org') {
     return {
-      content: `#+$location: [[kindle://book?action=open&asin=${asin}&location=${location}][${location}]]
-  #+$on: ${getDateForPage(new Date(highlighted_at), preferredDateFormat)}
-  #+$tags: ${prepareTags(tags)}
+      content: `#+location: [[kindle://book?action=open&asin=${asin}&location=${location}][${location}]]
+  #+on: ${getDateForPage(new Date(highlighted_at), preferredDateFormat)}
+  #+tags: ${prepareTags(tags)}
   ${text}`,
     };
   }
@@ -48,9 +48,9 @@ export const returnOtherHighlights = (
     };
   } else if (orgOrMarkdown === 'org') {
     return {
-      content: `#+$link: [[${url}][${url}]]
-  #+$on: ${getDateForPage(new Date(highlighted_at), preferredDateFormat)}
-  #+$tags: ${prepareTags(tags)}
+      content: `#+link: [[${url}][${url}]]
+  #+on: ${getDateForPage(new Date(highlighted_at), preferredDateFormat)}
+  #+tags: ${prepareTags(tags)}
   ${text}`,
     };
   }
@@ -73,11 +73,11 @@ export const returnPageMetaData = (
   tags:: ${prepareTags(tags)}
   ${metaData}`;
   } else if (orgOrMarkdown === 'org') {
-    return `#+$retrieved: ${getDateForPage(new Date(), preferredDateFormat)}
-  #+$author: [[${author}]]
-  #+$category: [[${category}]]
-  #+$source: [[${source}]]
-  #+$tags: ${prepareTags(tags)}
+    return `#+retrieved: ${getDateForPage(new Date(), preferredDateFormat)}
+  #+author: [[${author}]]
+  #+category: [[${category}]]
+  #+source: [[${source}]]
+  #+tags: ${prepareTags(tags)}
   ${metaData}`;
   }
 };

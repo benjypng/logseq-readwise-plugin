@@ -40,7 +40,6 @@ const Customise = () => {
     }
     logseq.updateSettings({ template: template });
     logseq.App.showMsg('Customisation saved!');
-    console.log(logseq.settings.template);
   };
 
   return (
