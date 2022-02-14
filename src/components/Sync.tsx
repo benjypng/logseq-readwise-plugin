@@ -10,7 +10,6 @@ import {
 import ProgressBar from './ProgressBar';
 
 const Sync = (props: {
-  loadFromReadwise: Function;
   loaded: boolean;
   sync: boolean;
   terminate: Function;
@@ -18,15 +17,7 @@ const Sync = (props: {
   token: string;
   setPluginSettings: Function;
 }) => {
-  const {
-    loadFromReadwise,
-    loaded,
-    sync,
-    terminate,
-    bookList,
-    token,
-    setPluginSettings,
-  } = props;
+  const { loaded, sync, terminate, bookList, token, setPluginSettings } = props;
 
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [coolingOff, setCoolingOff] = useState(false);
@@ -232,7 +223,7 @@ const Sync = (props: {
       </p>
       <div className="my-2">
         {/* Only show when setState has completed. */}
-        {loaded && !sync && (
+        {!sync && (
           <button
             // onClick={this.syncReadwise}
             className="border bg-blue-500 text-white px-2 py-1 rounded"

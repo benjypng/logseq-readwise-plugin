@@ -9,13 +9,6 @@ import Customise from './components/Customise';
 import Sync from './components/Sync';
 import RandomHighlight from './components/RandomHighlight';
 
-interface LogseqSettings {
-  token: string;
-  latestRetrieved: string;
-  sortRecentFirst: boolean;
-  retrievedTime: boolean;
-}
-
 interface PluginSettings {
   pageSize: number;
   noOfBooks: number;
@@ -29,15 +22,7 @@ interface PluginSettings {
 }
 
 const App = () => {
-  const { token, latestRetrieved, sortRecentFirst, retrievedTime } =
-    logseq.settings;
-
-  const [logseqSettings, setLogseqSettings] = useState<LogseqSettings>({
-    token: token,
-    latestRetrieved: latestRetrieved,
-    sortRecentFirst: sortRecentFirst,
-    retrievedTime: retrievedTime,
-  });
+  const { token } = logseq.settings;
 
   const [pluginSettings, setPluginSettings] = useState<PluginSettings>({
     pageSize: 1000,
@@ -62,17 +47,14 @@ const App = () => {
   } = pluginSettings;
 
   useEffect(() => {
-    // Get total number of highlights to show on dashboard
-    getTotalNumberOfHighlightsAndBooks(token, setPluginSettings);
+    async () => {
+      // Get total number of highlights to show on dashboard
+      await getTotalNumberOfHighlightsAndBooks(token, setPluginSettings);
 
-    // Load latest books
-    loadFromReadwise(token, pageSize, setPluginSettings, pluginSettings);
-
-    setPluginSettings((currSettings) => ({
-      ...currSettings,
-      loaded: true,
-    }));
-  }, []);
+      // Load latest books
+      await loadFromReadwise(token, pageSize, setPluginSettings);
+    };
+  });
 
   const terminate = () => {
     window.location.reload();
@@ -87,15 +69,11 @@ const App = () => {
       >
         {/* BASICS START */}
         <Basics
-          loadFromReadwise={() =>
-            loadFromReadwise(token, pageSize, setPluginSettings, pluginSettings)
-          }
-          setLogseqSettings={setLogseqSettings}
-          latestRetrieved={latestRetrieved}
-          logseqSettings={logseqSettings}
           noOfBooks={noOfBooks}
           noOfHighlights={noOfHighlights}
           noOfNewSources={noOfNewSources}
+          pageSize={pageSize}
+          setPluginSettings={setPluginSettings}
         />
         {/* BASICS END */}
         <hr className="border 2px solid black" />
@@ -105,9 +83,6 @@ const App = () => {
         <hr className="border 2px solid black" />
         {/* SYNC START */}
         <Sync
-          loadFromReadwise={() =>
-            loadFromReadwise(token, pageSize, setPluginSettings, pluginSettings)
-          }
           loaded={loaded}
           sync={sync}
           terminate={terminate}

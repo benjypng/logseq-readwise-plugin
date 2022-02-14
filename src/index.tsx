@@ -25,6 +25,12 @@ const main = async () => {
     });
   }
 
+  if (!logseq.settings.token) {
+    logseq.updateSettings({
+      token: '12345',
+    });
+  }
+
   // Set preferred date format
   window.setTimeout(async () => {
     const userConfigs = await logseq.App.getUserConfigs();

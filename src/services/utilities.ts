@@ -46,8 +46,7 @@ export const getTotalNumberOfHighlightsAndBooks = async (
 export const loadFromReadwise = async (
   token: string,
   pageSize: number,
-  setPluginSettings: Function,
-  pluginSettings: PluginSettings
+  setPluginSettings: Function
 ) => {
   console.log('Loading from Readwise...');
   // Log when is the latest retrieved
@@ -119,7 +118,10 @@ export const loadFromReadwise = async (
       }
     }
   } catch (e) {
-    setPluginSettings({ ...pluginSettings, errorLoading: true });
+    setPluginSettings((currSettings) => ({
+      ...currSettings,
+      errorLoading: true,
+    }));
   }
 };
 

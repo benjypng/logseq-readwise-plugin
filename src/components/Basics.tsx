@@ -1,39 +1,61 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { getDateForPageWithoutBrackets } from 'logseq-dateutils';
-import { loadFromReadwise } from '../services/utilities';
+import {
+  getTotalNumberOfHighlightsAndBooks,
+  loadFromReadwise,
+} from '../services/utilities';
+
+interface LogseqSettings {
+  token: string;
+}
 
 const Basics = (props: {
-  loadFromReadwise: Function;
-  setLogseqSettings: Function;
-  latestRetrieved: string;
-  logseqSettings: { token: string };
   noOfBooks: number;
   noOfHighlights: number;
   noOfNewSources: number;
+  pageSize: number;
+  setPluginSettings: Function;
 }) => {
   const {
-    loadFromReadwise,
-    setLogseqSettings,
-    latestRetrieved,
-    logseqSettings,
     noOfBooks,
     noOfHighlights,
     noOfNewSources,
+    pageSize,
+    setPluginSettings,
   } = props;
 
-  const { preferredDateFormat } = logseq.settings;
+  const [logseqSettings, setLogseqSettings] = useState<LogseqSettings>({
+    token: logseq.settings.token,
+  });
+
+  const { preferredDateFormat, latestRetrieved } = logseq.settings;
 
   const handleLogseqSettingsInput = (e: any) => {
-    setLogseqSettings({ ...logseqSettings, [e.target.name]: e.target.value });
+    setLogseqSettings((currSettings) => ({
+      ...currSettings,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const saveToken = () => {
     logseq.updateSettings({ token: logseqSettings.token });
     logseq.App.showMsg('Token saved!', 'success');
+
+    window.setTimeout(() => {
+      getTotalNumberOfHighlightsAndBooks(
+        logseq.settings.token,
+        setPluginSettings
+      );
+      loadFromReadwise(logseq.settings.token, pageSize, setPluginSettings);
+    }, 2000);
   };
 
   const hide = () => {
     logseq.hideMainUI();
+  };
+
+  const refresh = () => {
+    loadFromReadwise(logseq.settings.token, pageSize, setPluginSettings);
   };
 
   return (
@@ -52,15 +74,18 @@ const Basics = (props: {
           </svg>
         </button>
       </div>
-      <p>
-        Last Retrieved:{' '}
-        {getDateForPageWithoutBrackets(
-          new Date(latestRetrieved),
-          preferredDateFormat
-        )}{' '}
-        @ {new Date(latestRetrieved).getHours()}:
-        {new Date(latestRetrieved).getMinutes()}
-      </p>
+      {!latestRetrieved.startsWith('1970') && (
+        <p>
+          Last Retrieved:{' '}
+          {getDateForPageWithoutBrackets(
+            new Date(latestRetrieved),
+            preferredDateFormat
+          )}{' '}
+          @ {new Date(latestRetrieved).getHours()}:
+          {new Date(latestRetrieved).getMinutes()}{' '}
+        </p>
+      )}
+
       <div className="flex flex-row">
         <input
           placeholder="Key in your Readwise API Token"
@@ -106,12 +131,7 @@ const Basics = (props: {
             <span className="font-semibold mr-2 text-left flex-auto">
               Number of new sources to sync
             </span>
-            <button
-              onClick={() => {
-                loadFromReadwise();
-              }}
-              className="text-blue-500 font-bold pl-3"
-            >
+            <button onClick={refresh} className="text-blue-500 font-bold pl-3">
               Refresh
             </button>
           </div>
