@@ -1,10 +1,49 @@
 import '@logseq/libs';
 import './App.css';
+import { bookView } from './services/bookView';
 import { pluginBar } from './services/pluginBar';
 import { getRandomHighlight } from './services/randomHighlightsUtilities';
 
 const main = async () => {
   console.log('Readwise plugin loaded');
+
+  if (!logseq.settings.template) {
+    logseq.updateSettings({
+      template: {
+        customTitle: '%title% (Readwise)',
+        metaData: '',
+        height: '200',
+        width: '200',
+        sectionHeader: '## [[Readwise Highlights]]',
+      },
+    });
+  }
+
+  if (!logseq.settings.latestRetrieved) {
+    logseq.updateSettings({
+      latestRetrieved: '1970-01-01T00:00:00Z',
+    });
+  }
+
+  // Set preferred date format
+  window.setTimeout(async () => {
+    const userConfigs = await logseq.App.getUserConfigs();
+
+    const preferredDateFormat: string = userConfigs.preferredDateFormat;
+    const orgOrMarkdown: string = userConfigs.preferredFormat;
+
+    logseq.updateSettings({
+      preferredDateFormat: preferredDateFormat,
+      orgOrMarkdown: orgOrMarkdown,
+    });
+
+    console.log(
+      `Settings updated to ${preferredDateFormat} and ${orgOrMarkdown}}`
+    );
+
+    // PLUGIN BAR ICON
+    pluginBar();
+  }, 3000);
 
   // RANDOM HIGHLIGHT
   const randomHighlight = async () => {
@@ -39,8 +78,7 @@ const main = async () => {
     );
   });
 
-  // PLUGIN BAR ICON
-  pluginBar();
+  bookView();
 };
 
 logseq.ready(main).catch(console.error);

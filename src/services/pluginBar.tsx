@@ -4,23 +4,6 @@ import App from '../App';
 import { handleClosePopup } from './handleClosePopup';
 
 export const pluginBar = () => {
-  // Set preferred date format
-  window.setTimeout(async () => {
-    const userConfigs = await logseq.App.getUserConfigs();
-
-    const preferredDateFormat: string = userConfigs.preferredDateFormat;
-    const orgOrMarkdown: string = userConfigs.preferredFormat;
-
-    logseq.updateSettings({
-      preferredDateFormat: preferredDateFormat,
-      orgOrMarkdown: orgOrMarkdown,
-    });
-
-    console.log(
-      `Settings updated to ${preferredDateFormat} and ${orgOrMarkdown}}`
-    );
-  }, 3000);
-
   ReactDOM.render(
     <React.StrictMode>
       <App />
