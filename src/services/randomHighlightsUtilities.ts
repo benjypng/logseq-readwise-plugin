@@ -1,12 +1,17 @@
-const getRandomHighlight = async () => {
+export const getRandomHighlight = async () => {
   const getRandomNumber = (min: number, max: number) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
+  const sectionHeader = logseq.settings.template.sectionHeader
+    .replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '')
+    .toLowerCase()
+    .trim();
+
   const readwiseHighlights = await logseq.DB
     .datascriptQuery(`[:find (pull ?b [*])
     :where
-        [?b :block/path-refs [:block/name "readwise highlights"]]
+        [?b :block/path-refs [:block/name "${sectionHeader}"]]
 ]`);
 
   const readwiseHighlightsArr = readwiseHighlights.map((a) => ({
@@ -20,12 +25,12 @@ const getRandomHighlight = async () => {
   return readwiseHighlightsArr[randomNumber];
 };
 
-const scrollToRandomHighlight = async () => {
+export const scrollToRandomHighlight = async () => {
   logseq.hideMainUI();
 
   const randomHighlight = await getRandomHighlight();
 
-  if (randomHighlight.content === '## [[Readwise Highlights]]') {
+  if (randomHighlight.content === logseq.settings.template.sectionHeader) {
     await scrollToRandomHighlight();
   } else {
     const page = await logseq.Editor.getPage(randomHighlight['pageId']);
