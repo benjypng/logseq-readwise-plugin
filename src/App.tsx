@@ -47,14 +47,12 @@ const App = () => {
   } = pluginSettings;
 
   useEffect(() => {
-    async () => {
-      // Get total number of highlights to show on dashboard
-      await getTotalNumberOfHighlightsAndBooks(token, setPluginSettings);
+    // Get total number of highlights to show on dashboard
+    getTotalNumberOfHighlightsAndBooks(token, setPluginSettings);
 
-      // Load latest books
-      await loadFromReadwise(token, pageSize, setPluginSettings);
-    };
-  });
+    // Load latest books
+    loadFromReadwise(token, pageSize, setPluginSettings);
+  }, []);
 
   const terminate = () => {
     window.location.reload();

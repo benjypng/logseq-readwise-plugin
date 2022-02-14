@@ -55,6 +55,10 @@ const Basics = (props: {
   };
 
   const refresh = () => {
+    getTotalNumberOfHighlightsAndBooks(
+      logseq.settings.token,
+      setPluginSettings
+    );
     loadFromReadwise(logseq.settings.token, pageSize, setPluginSettings);
   };
 

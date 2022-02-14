@@ -1,6 +1,6 @@
 {
   "name": "logseq-readwise-plugin",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "author": "hkgnp",
   "description": "Unofficial Readwise plugin to pull in all your highlights from Readwise and track new ones!",
   "logseq": {
