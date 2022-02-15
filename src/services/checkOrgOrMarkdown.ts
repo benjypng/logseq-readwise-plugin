@@ -23,12 +23,12 @@ export const returnKindleHighlights = (
     };
   } else if (orgOrMarkdown === 'org') {
     return {
-      content: `${text}
-      :PROPERTIES:
+      content: `:PROPERTIES:
       :location: [[kindle://book?action=open&asin=${asin}&location=${location}][${location}]]
       :on: ${getDateForPage(new Date(highlighted_at), preferredDateFormat)}
       :tags: ${prepareTags(tags)} 
-      :END:`,
+      :END:
+      ${text}`,
     };
   }
 };
@@ -50,12 +50,12 @@ export const returnOtherHighlights = (
     };
   } else if (orgOrMarkdown === 'org') {
     return {
-  content: `${text}
-  :PROPERTIES:
+  content: `:PROPERTIES:
 :link: ${url}
 :on: ${getDateForPage(new Date(highlighted_at), preferredDateFormat)}
 :tags: ${prepareTags(tags)} 
-:END:`,
+:END:
+${text}`,
     };
   }
 };
