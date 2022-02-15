@@ -23,10 +23,12 @@ export const returnKindleHighlights = (
     };
   } else if (orgOrMarkdown === 'org') {
     return {
-      content: `#+location: [[kindle://book?action=open&asin=${asin}&location=${location}][${location}]]
-  #+on: ${getDateForPage(new Date(highlighted_at), preferredDateFormat)}
-  #+tags: ${prepareTags(tags)}
-  ${text}`,
+      content: `${text}
+      :PROPERTIES:
+      :location: [[kindle://book?action=open&asin=${asin}&location=${location}][${location}]]
+      :on: ${getDateForPage(new Date(highlighted_at), preferredDateFormat)}
+      :tags: ${prepareTags(tags)} 
+      :END:`,
     };
   }
 };
@@ -48,10 +50,12 @@ export const returnOtherHighlights = (
     };
   } else if (orgOrMarkdown === 'org') {
     return {
-      content: `#+link: [[${url}][${url}]]
-  #+on: ${getDateForPage(new Date(highlighted_at), preferredDateFormat)}
-  #+tags: ${prepareTags(tags)}
-  ${text}`,
+  content: `${text}
+  :PROPERTIES:
+:link: ${url}
+:on: ${getDateForPage(new Date(highlighted_at), preferredDateFormat)}
+:tags: ${prepareTags(tags)} 
+:END:`,
     };
   }
 };
@@ -73,12 +77,24 @@ export const returnPageMetaData = (
   tags:: ${prepareTags(tags)}
   ${metaData}`;
   } else if (orgOrMarkdown === 'org') {
-    return `#+retrieved: ${getDateForPage(new Date(), preferredDateFormat)}
-  #+author: [[${author}]]
-  #+category: [[${category}]]
-  #+source: [[${source}]]
-  #+tags: ${prepareTags(tags)}
-  ${metaData}`;
+    if(metaData === ''){
+      return `:PROPERTIES:
+      :retrieved: ${getDateForPage(new Date(), preferredDateFormat)}
+      :author: [[${author}]]
+      :category: [[${category}]]
+      :source: [[${source}]]
+      :tags: ${prepareTags(tags)}
+      :END:`;
+    }else{
+    return `:PROPERTIES:
+:retrieved: ${getDateForPage(new Date(), preferredDateFormat)}
+:author: [[${author}]]
+:category: [[${category}]]
+:source: [[${source}]]
+:tags: ${prepareTags(tags)}
+${metadata}
+:END:`;
+    }
   }
 };
 
@@ -91,6 +107,6 @@ export const returnImage = (
   if (orgOrMarkdown === 'markdown') {
     return `![book_image](${cover_image_url}){:height ${height} :width ${width}}`;
   } else if (orgOrMarkdown === 'org') {
-    return `![[${cover_image_url}][${cover_image_url}]]`;
+    return `[[${cover_image_url}][${cover_image_url}]]`;
   }
 };

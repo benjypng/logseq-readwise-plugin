@@ -91,7 +91,7 @@ const Customise = () => {
               In addition to the core properties (retrieved date, author,
               category, source, tags), you can indicate other meta properties
               that will go to the top of the page. Acceps both markdown and
-              org-mode formats.
+              org-mode formats. For org, use the format :key: value to define the metadata.
             </p>
             <input
               placeholder="referrer:: [[Readwise]]"
