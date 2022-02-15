@@ -17,18 +17,18 @@ export const returnKindleHighlights = (
   if (orgOrMarkdown === 'markdown') {
     return {
       content: `location:: [${location}](kindle://book?action=open&asin=${asin}&location=${location})
-  on:: ${getDateForPage(new Date(highlighted_at), preferredDateFormat)}
-  tags:: ${prepareTags(tags)}
-  ${text}`,
+on:: ${getDateForPage(new Date(highlighted_at), preferredDateFormat)}
+tags:: ${prepareTags(tags)}
+${text}`,
     };
   } else if (orgOrMarkdown === 'org') {
     return {
       content: `:PROPERTIES:
-      :location: [[kindle://book?action=open&asin=${asin}&location=${location}][${location}]]
-      :on: ${getDateForPage(new Date(highlighted_at), preferredDateFormat)}
-      :tags: ${prepareTags(tags)} 
-      :END:
-      ${text}`,
+:location: [[kindle://book?action=open&asin=${asin}&location=${location}][${location}]]
+:on: ${getDateForPage(new Date(highlighted_at), preferredDateFormat)}
+:tags: ${prepareTags(tags)} 
+:END:
+${text}`,
     };
   }
 };
@@ -70,21 +70,29 @@ export const returnPageMetaData = (
   metaData: string
 ) => {
   if (orgOrMarkdown === 'markdown') {
-    return `retrieved:: ${getDateForPage(new Date(), preferredDateFormat)}
-  author:: [[${author}]]
-  category:: [[${category}]]
-  source:: [[${source}]]
-  tags:: ${prepareTags(tags)}
-  ${metaData}`;
+    if (metaData === '') {
+      return `retrieved:: ${getDateForPage(new Date(), preferredDateFormat)}
+author:: [[${author}]]
+category:: [[${category}]]
+source:: [[${source}]]
+tags:: ${prepareTags(tags)}`;
+    } else {
+      return `retrieved:: ${getDateForPage(new Date(), preferredDateFormat)}
+author:: [[${author}]]
+category:: [[${category}]]
+source:: [[${source}]]
+tags:: ${prepareTags(tags)}
+${metaData}`;
+    }
   } else if (orgOrMarkdown === 'org') {
     if (metaData === '') {
       return `:PROPERTIES:
-      :retrieved: ${getDateForPage(new Date(), preferredDateFormat)}
-      :author: [[${author}]]
-      :category: [[${category}]]
-      :source: [[${source}]]
-      :tags: ${prepareTags(tags)}
-      :END:`;
+:retrieved: ${getDateForPage(new Date(), preferredDateFormat)}
+:author: [[${author}]]
+:category: [[${category}]]
+:source: [[${source}]]
+:tags: ${prepareTags(tags)}
+:END:`;
     } else {
       return `:PROPERTIES:
 :retrieved: ${getDateForPage(new Date(), preferredDateFormat)}
