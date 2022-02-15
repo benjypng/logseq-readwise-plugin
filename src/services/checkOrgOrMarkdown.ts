@@ -50,7 +50,7 @@ export const returnOtherHighlights = (
     };
   } else if (orgOrMarkdown === 'org') {
     return {
-  content: `:PROPERTIES:
+      content: `:PROPERTIES:
 :link: ${url}
 :on: ${getDateForPage(new Date(highlighted_at), preferredDateFormat)}
 :tags: ${prepareTags(tags)} 
@@ -77,7 +77,7 @@ export const returnPageMetaData = (
   tags:: ${prepareTags(tags)}
   ${metaData}`;
   } else if (orgOrMarkdown === 'org') {
-    if(metaData === ''){
+    if (metaData === '') {
       return `:PROPERTIES:
       :retrieved: ${getDateForPage(new Date(), preferredDateFormat)}
       :author: [[${author}]]
@@ -85,14 +85,14 @@ export const returnPageMetaData = (
       :source: [[${source}]]
       :tags: ${prepareTags(tags)}
       :END:`;
-    }else{
-    return `:PROPERTIES:
+    } else {
+      return `:PROPERTIES:
 :retrieved: ${getDateForPage(new Date(), preferredDateFormat)}
 :author: [[${author}]]
 :category: [[${category}]]
 :source: [[${source}]]
 :tags: ${prepareTags(tags)}
-${metadata}
+${metaData}
 :END:`;
     }
   }
