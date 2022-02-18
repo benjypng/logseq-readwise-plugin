@@ -101,7 +101,11 @@ const Sync = (props: {
 
       // Set Title
       logseq.App.pushState('page', {
-        name: customTitle.replace('%title%', bookTitle),
+        name: customTitle
+          .replace('%title%', bookTitle)
+          .replace('%author%', b.author)
+          .replace('%category%', b.category)
+          .replace('%source%', b.source),
       });
 
       const currPage = await logseq.Editor.getCurrentPage();

@@ -70,11 +70,13 @@ const Customise = () => {
           <div className="mb-5">
             <p className="text-lg font-semibold">Title</p>
             <p>
-              Use %title% to indicate the title, and add your preferred prefixes
-              or suffixes.
+              Use %title% (e.g. To Kill a Mockingbird), %category% (e.g. books),
+              %source% (e.g. kindle) or %author% (e.g. Harper Lee) to indicate
+              the title, category, source or author in the name of the
+              highlights page and add your preferred prefixes or suffixes.
             </p>
             <input
-              placeholder="%title% (Readwise)"
+              placeholder="%category%/%title% (Readwise)"
               type="text"
               name="customTitle"
               value={customTitle}
@@ -91,7 +93,8 @@ const Customise = () => {
               In addition to the core properties (retrieved date, author,
               category, source, tags), you can indicate other meta properties
               that will go to the top of the page. Acceps both markdown and
-              org-mode formats. For org, use the format :key: value to define the metadata.
+              org-mode formats. For org, use the format :key: value to define
+              the metadata.
             </p>
             <input
               placeholder="referrer:: [[Readwise]]"
