@@ -39,14 +39,18 @@ export const returnOtherHighlights = (
   highlighted_at: string,
   preferredDateFormat: string,
   tags: any[],
-  text: string
+  text: string,
+  height: string,
+  width: string
 ) => {
   if (orgOrMarkdown === 'markdown') {
     return {
       content: `link:: [${url}](${url})
   on:: ${getDateForPage(new Date(highlighted_at), preferredDateFormat)}
   tags:: ${prepareTags(tags)}
-  ${text}`,
+  ${
+    text.includes('![](') ? text + `{:height ${height} :width ${width}}` : text
+  }`,
     };
   } else if (orgOrMarkdown === 'org') {
     return {

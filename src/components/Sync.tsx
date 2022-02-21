@@ -85,7 +85,9 @@ const Sync = (props: {
               h.highlighted_at,
               preferredDateFormat,
               h.tags,
-              h.text
+              h.text,
+              height,
+              width
             )
           );
         }
