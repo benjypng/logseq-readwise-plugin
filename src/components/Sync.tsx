@@ -60,6 +60,11 @@ const Sync = (props: {
         (b) => new Date(b.updated) > new Date(logseq.settings.latestRetrieved)
       );
 
+      if (latestHighlights.length === 0) {
+        console.log(`No highlights found for '${b.title}'`);
+        continue;
+      }
+
       // Prepare latest highlights for logeq insertion
       let latestHighlightsArr: any[] = [];
       if (b.source === 'kindle') {
