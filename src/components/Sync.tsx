@@ -1,13 +1,16 @@
-import { getDateForPage } from 'logseq-dateutils';
-import React, { useState } from 'react';
-import { getHighlightsForBook } from '../services/utilities';
+import React, { useState } from "react";
+import { getHighlightsForBook } from "../services/utilities";
 import {
   returnKindleHighlights,
   returnOtherHighlights,
   returnPageMetaData,
   returnImage,
-} from '../services/checkOrgOrMarkdown';
-import ProgressBar from './ProgressBar';
+} from "../services/checkOrgOrMarkdown";
+import ProgressBar from "./ProgressBar";
+
+const sleep = (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
 
 const Sync = (props: {
   loaded: boolean;
@@ -17,7 +20,7 @@ const Sync = (props: {
   token: string;
   setPluginSettings: Function;
 }) => {
-  const { loaded, sync, terminate, bookList, token, setPluginSettings } = props;
+  const { sync, terminate, bookList, token, setPluginSettings } = props;
 
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [coolingOff, setCoolingOff] = useState(false);
@@ -28,11 +31,11 @@ const Sync = (props: {
   const { preferredDateFormat, orgOrMarkdown } = logseq.settings;
 
   const getHighlightsForEachBook = async () => {
-    if (customTitle === '' || sectionHeader === '') {
-      logseq.App.showMsg('Your template is not set up yet!', 'error');
+    if (customTitle === "" || sectionHeader === "") {
+      logseq.App.showMsg("Your template is not set up yet!", "error");
       return;
     } else if (bookList.length === 0) {
-      logseq.App.showMsg('There are no new sources to sync!', 'success');
+      logseq.App.showMsg("There are no new sources to sync!", "success");
       return;
     }
 
@@ -55,6 +58,8 @@ const Sync = (props: {
         setCoolingOff
       );
 
+      sleep(2000);
+
       // Filter only the latest highlights
       const latestHighlights = bookHighlights.data.results.filter(
         (b) => new Date(b.updated) > new Date(logseq.settings.latestRetrieved)
@@ -62,7 +67,7 @@ const Sync = (props: {
 
       // Prepare latest highlights for logeq insertion
       let latestHighlightsArr: any[] = [];
-      if (b.source === 'kindle') {
+      if (b.source === "kindle") {
         for (const h of latestHighlights) {
           latestHighlightsArr.push(
             returnKindleHighlights(
@@ -94,20 +99,24 @@ const Sync = (props: {
       }
 
       // remove speccial characters
-      const bookTitle = b.title.replace(
-        /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,
-        ''
-      );
+      const bookTitle = b.title
+        .replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, "")
+        .replace(
+          /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g,
+          ""
+        )
+        .replace(/\s+/g, " ")
+        .trim();
 
       console.log(`Updating ${bookTitle}`);
 
       // Set Title
-      logseq.App.pushState('page', {
+      logseq.App.pushState("page", {
         name: customTitle
-          .replace('%title%', bookTitle)
-          .replace('%author%', b.author)
-          .replace('%category%', b.category)
-          .replace('%source%', b.source),
+          .replace("%title%", bookTitle)
+          .replace("%author%", b.author)
+          .replace("%category%", b.category)
+          .replace("%source%", b.source),
       });
 
       const currPage = await logseq.Editor.getCurrentPage();
@@ -190,7 +199,7 @@ const Sync = (props: {
           getChildren.children[getChildren.children.length - 1];
 
         await logseq.Editor.insertBatchBlock(
-          lastBlockOfChildren['uuid'],
+          lastBlockOfChildren["uuid"],
           latestHighlightsArr.reverse(),
           {
             sibling: true,
@@ -207,8 +216,8 @@ const Sync = (props: {
     }));
 
     logseq.App.showMsg(
-      'Highlights imported! If you made any changes to the [[Readwise Highlights]] block before you synced, you may need to revist those pages to remove duplicate higlights. Please refer to the console in Developer Tools for these pages.',
-      'success'
+      "Highlights imported! If you made any changes to the [[Readwise Highlights]] block before you synced, you may need to revist those pages to remove duplicate higlights. Please refer to the console in Developer Tools for these pages.",
+      "success"
     );
 
     // Reset progress bar

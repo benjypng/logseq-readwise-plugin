@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import highlight from './services/randomHighlightsUtilities';
+import React, { useEffect, useState } from "react";
 import {
   getTotalNumberOfHighlightsAndBooks,
   loadFromReadwise,
-} from './services/utilities';
-import Basics from './components/Basics';
-import Customise from './components/Customise';
-import Sync from './components/Sync';
-import RandomHighlight from './components/RandomHighlight';
+} from "./services/utilities";
+import Basics from "./components/Basics";
+import Customise from "./components/Customise";
+import Sync from "./components/Sync";
+import RandomHighlight from "./components/RandomHighlight";
 
 interface PluginSettings {
   pageSize: number;
@@ -60,9 +59,9 @@ const App = () => {
   };
 
   return (
-    <div className="flex justify-center overflow-scroll">
+    <div className="flex justify-center">
       <div
-        className="absolute top-3 bg-white rounded-lg p-3 w-2/3 border font-serif
+        className="absolute top-3 bg-white rounded-lg p-3 w-2/3 font-serif
 "
       >
         {/* BASICS START */}
