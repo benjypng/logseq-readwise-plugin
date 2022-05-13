@@ -111,6 +111,14 @@ const Sync = (props: {
 
       console.log(`Updating ${bookTitle}`);
 
+      const pageName = customTitle
+        .replace("%title%", bookTitle)
+        .replace("%author%", b.author)
+        .replace("%category%", b.category)
+        .replace("%source%", b.source);
+
+      await logseq.Editor.createPage(pageName, { journal: false });
+
       // Set Title
       logseq.App.pushState("page", {
         name: customTitle
