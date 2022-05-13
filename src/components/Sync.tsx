@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { getHighlightsForBook } from "../services/utilities";
+import { getHighlightsForBook, sleep } from "../services/utilities";
 import {
   returnKindleHighlights,
   returnOtherHighlights,
@@ -7,10 +7,6 @@ import {
   returnImage,
 } from "../services/checkOrgOrMarkdown";
 import ProgressBar from "./ProgressBar";
-
-const sleep = (ms: number) => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-};
 
 const Sync = (props: {
   loaded: boolean;
@@ -123,6 +119,8 @@ const Sync = (props: {
           .replace("%category%", b.category)
           .replace("%source%", b.source),
       });
+
+      sleep(1000);
 
       const currPage = await logseq.Editor.getCurrentPage();
 

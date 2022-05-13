@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 interface PluginSettings {
   pageSize: number;
@@ -21,22 +21,22 @@ export const getTotalNumberOfHighlightsAndBooks = async (
   setPluginSettings: Function
 ) => {
   const response = await axios({
-    method: 'get',
-    url: 'https://readwise.io/api/v2/highlights/',
+    method: "get",
+    url: "https://readwise.io/api/v2/highlights/",
     headers: {
       Authorization: `Token ${token}`,
     },
   });
 
   const response2 = await axios({
-    method: 'get',
-    url: 'https://readwise.io/api/v2/books/',
+    method: "get",
+    url: "https://readwise.io/api/v2/books/",
     headers: {
       Authorization: `Token ${token}`,
     },
   });
 
-  setPluginSettings((currSettings) => ({
+  setPluginSettings((currSettings: PluginSettings) => ({
     ...currSettings,
     noOfHighlights: response.data.count,
     noOfBooks: response2.data.count,
@@ -48,13 +48,13 @@ export const loadFromReadwise = async (
   pageSize: number,
   setPluginSettings: Function
 ) => {
-  console.log('Loading from Readwise...');
+  console.log("Loading from Readwise...");
   // Log when is the latest retrieved
   console.log(`Latest retrieved date: ${logseq.settings.latestRetrieved}`);
 
   const promiseGetBooks = async (i: number) => {
     const response = await axios({
-      method: 'get',
+      method: "get",
       url: `https://readwise.io/api/v2/books/?page=${i}`,
       headers: {
         Authorization: `Token ${token}`,
@@ -74,7 +74,7 @@ export const loadFromReadwise = async (
       try {
         const response = await promiseGetBooks(i);
 
-        setPluginSettings((currSettings) => ({
+        setPluginSettings((currSettings: PluginSettings) => ({
           ...currSettings,
           noOfNewSources: response.data.count,
           bookList: response.data.results,
@@ -90,18 +90,18 @@ export const loadFromReadwise = async (
           return;
         } else {
           const retryAfter =
-            parseInt(e.response.headers['retry-after']) * 1000 + 5000;
+            parseInt(e.response.headers["retry-after"]) * 1000 + 5000;
 
           await sleep(retryAfter);
 
-          console.log('Trying a second time...');
+          console.log("Trying a second time...");
 
           const response = await promiseGetBooks(i);
 
-          if (response.data.detail === 'Invalid page.') {
+          if (response.data.detail === "Invalid page.") {
             break;
           } else {
-            setPluginSettings((currSettings) => ({
+            setPluginSettings((currSettings: PluginSettings) => ({
               ...currSettings,
               bookList: response.data.results,
             }));
@@ -118,7 +118,7 @@ export const loadFromReadwise = async (
       }
     }
   } catch (e) {
-    setPluginSettings((currSettings) => ({
+    setPluginSettings((currSettings: PluginSettings) => ({
       ...currSettings,
       errorLoading: true,
     }));
@@ -133,8 +133,8 @@ export const getHighlightsForBook = async (
   let response: any;
   try {
     response = await axios({
-      method: 'get',
-      url: 'https://readwise.io/api/v2/highlights/',
+      method: "get",
+      url: "https://readwise.io/api/v2/highlights/",
       headers: {
         Authorization: `Token ${token}`,
       },
@@ -150,15 +150,15 @@ export const getHighlightsForBook = async (
     }
 
     const retryAfter =
-      parseInt(e.response.headers['retry-after']) * 1000 + 5000;
+      parseInt(e.response.headers["retry-after"]) * 1000 + 5000;
 
     await sleep(retryAfter);
 
-    console.log('Trying a second time...');
+    console.log("Trying a second time...");
 
     response = await axios({
-      method: 'get',
-      url: 'https://readwise.io/api/v2/highlights/',
+      method: "get",
+      url: "https://readwise.io/api/v2/highlights/",
       headers: {
         Authorization: `Token ${token}`,
       },
