@@ -117,7 +117,7 @@ const Sync = (props: {
         .replace("%category%", b.category)
         .replace("%source%", b.source);
 
-      await logseq.Editor.createPage(pageName, { journal: false });
+      await logseq.Editor.createPage(pageName);
 
       // Set Title
       logseq.App.pushState("page", {
@@ -136,7 +136,7 @@ const Sync = (props: {
       const pageBlocksTree = await logseq.Editor.getCurrentPageBlocksTree();
 
       // Create new page
-      if (pageBlocksTree.length === 0) {
+      if (pageBlocksTree.length === 0 || pageBlocksTree[0].content === "") {
         // Set metaData
         await logseq.Editor.insertBlock(
           currPage.name,
@@ -182,6 +182,9 @@ const Sync = (props: {
               sibling: false,
             }
           );
+        }
+        if (pageBlocksTree[0].content === "") {
+          await logseq.Editor.removeBlock(pageBlocksTree[0].uuid);
         }
       } else {
         // Add to highlights section
