@@ -2,25 +2,26 @@ export const bookView = () => {
   logseq.App.onMacroRendererSlotted(async ({ slot, payload }) => {
     const uuid = payload.uuid;
     const [type] = payload.arguments;
-    if (!type.startsWith(':bookRenderer_')) return;
+    if (!type.startsWith(":bookRenderer_")) return;
 
-    const id = type.split('_')[1]?.trim();
+    const id = type.split("_")[1]?.trim();
     const bookRendererId = `bookRenderer_${id}`;
 
     // Get list of books using query
     let bookPropertyList = await logseq.DB.datascriptQuery(`[:find (pull ?p [*])
-      :where
-      [?p :block/name _]
-      [?p :block/properties ?pr]
-      [(get ?pr :category) ?comp]
-      [(contains?  #{"[[books]]"} ?comp)]
-    ]`);
+         :where
+         [?p :block/name _]
+         [?p :block/properties ?prop]
+         [(get ?prop :category) ?t]
+         [(contains? ?t "books")]
+       ]`);
+    console.log(bookPropertyList);
 
     bookPropertyList = bookPropertyList.map((i: any) => ({
-      originalName: i[0]['original-name'],
-      properties: i[0]['properties'],
-      pageUUID: i[0]['uuid']['$uuid$'],
-      pageName: i[0]['name'],
+      originalName: i[0]["original-name"],
+      properties: i[0]["properties"],
+      pageUUID: i[0]["uuid"]["$uuid$"],
+      pageName: i[0]["name"],
     }));
 
     for (const b of bookPropertyList) {
@@ -30,30 +31,32 @@ export const bookView = () => {
       const regExp = /\((.*?)\)/;
       const matched = regExp.exec(imageUrl);
 
-      b['imageUrl'] = matched[1];
+      b["imageUrl"] = matched[1];
     }
 
     // Function to go to Block
     const goTo = async (x: string) => {
-      logseq.App.pushState('page', { name: x });
+      logseq.App.pushState("page", { name: x });
     };
 
     // Create model for each section so as to enable events
     let models = {};
     for (let m = 0; m < bookPropertyList.length; m++) {
-      models['goToPage' + m] = function () {
+      models["goToPage" + m] = function () {
         goTo(bookPropertyList[m].pageName);
       };
     }
     logseq.provideModel(models);
 
-    let html: string = '';
+    let html: string = "";
     for (let i = 0; i < bookPropertyList.length; i++) {
-      const { author, source } = bookPropertyList[i].properties;
+      let { author, source } = bookPropertyList[i].properties;
+      author = author[0];
+      source = source[0];
       let { imageUrl } = bookPropertyList[i];
-      if (imageUrl.includes('_SL200_.') || imageUrl.includes('_SY160.')) {
-        imageUrl = imageUrl.replace('_SL200_.', '');
-        imageUrl = imageUrl.replace('_SY160.', '');
+      if (imageUrl.includes("_SL200_.") || imageUrl.includes("_SY160.")) {
+        imageUrl = imageUrl.replace("_SL200_.", "");
+        imageUrl = imageUrl.replace("_SY160.", "");
       }
 
       html += `<div class="card" data-on-click="goToPage${i}">
