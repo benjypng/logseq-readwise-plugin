@@ -15,7 +15,6 @@ export const bookView = () => {
          [(get ?prop :category) ?t]
          [(contains? ?t "books")]
        ]`);
-    console.log(bookPropertyList);
 
     bookPropertyList = bookPropertyList.map((i: any) => ({
       originalName: i[0]["original-name"],
