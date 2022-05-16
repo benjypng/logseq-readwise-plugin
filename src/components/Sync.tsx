@@ -197,23 +197,26 @@ const Sync = (props: {
           console.log(
             `${b.title} had changes made to its [[Readwise Highlights]] block.`
           );
-          highlightsBlock[0] = await logseq.Editor.insertBlock(
+          const highlightsBlock = await logseq.Editor.insertBlock(
             currPage.name,
             sectionHeader,
-            { sibling: true, isPageBlock: true }
+            {
+              sibling: true,
+              isPageBlock: true,
+            }
+          );
+
+          await logseq.Editor.insertBatchBlock(
+            highlightsBlock.uuid,
+            latestHighlightsArr.reverse(),
+            {
+              sibling: true,
+            }
           );
         }
 
-        const getChildren = await logseq.Editor.getBlock(
-          highlightsBlock[0].uuid,
-          { includeChildren: true }
-        );
-
-        const lastBlockOfChildren =
-          getChildren.children[getChildren.children.length - 1];
-
         await logseq.Editor.insertBatchBlock(
-          lastBlockOfChildren["uuid"],
+          highlightsBlock[0].uuid,
           latestHighlightsArr.reverse(),
           {
             sibling: true,
