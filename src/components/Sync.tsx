@@ -201,7 +201,6 @@ const Sync = (props: {
             currPage.name,
             sectionHeader,
             {
-              sibling: true,
               isPageBlock: true,
             }
           );
@@ -210,7 +209,8 @@ const Sync = (props: {
             highlightsBlock.uuid,
             latestHighlightsArr.reverse(),
             {
-              sibling: true,
+              sibling: false,
+              before: false,
             }
           );
         }
@@ -219,7 +219,8 @@ const Sync = (props: {
           highlightsBlock[0].uuid,
           latestHighlightsArr.reverse(),
           {
-            sibling: true,
+            sibling: false,
+            before: false,
           }
         );
       }
