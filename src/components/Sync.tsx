@@ -7,6 +7,7 @@ import {
   returnImage,
 } from "../services/checkOrgOrMarkdown";
 import ProgressBar from "./ProgressBar";
+import { BlockEntity } from "@logseq/libs/dist/LSPlugin.user";
 
 const Sync = (props: {
   loaded: boolean;
@@ -215,11 +216,15 @@ const Sync = (props: {
           );
         }
 
+        const lastBlk = highlightsBlock[0].children[
+          highlightsBlock[0].children.length - 1
+        ] as BlockEntity;
+
         await logseq.Editor.insertBatchBlock(
-          highlightsBlock[0].uuid,
+          lastBlk.uuid,
           latestHighlightsArr.reverse(),
           {
-            sibling: false,
+            sibling: true,
             before: false,
           }
         );
