@@ -216,10 +216,11 @@ const Sync = (props: {
           );
         }
 
+        console.log(highlightsBlock[0]);
         const lastBlk = highlightsBlock[0].children[
           highlightsBlock[0].children.length - 1
         ] as BlockEntity;
-
+        console.log(lastBlk);
         await logseq.Editor.insertBatchBlock(
           lastBlk.uuid,
           latestHighlightsArr.reverse(),
