@@ -194,7 +194,7 @@ const Sync = (props: {
         );
 
         // Check if section header is on the page. If not, create it.
-        if (!highlightsBlock[0]) {
+        if (!highlightsBlock[0] || highlightsBlock[0].children.length === 0) {
           console.log(
             `${b.title} had changes made to its [[Readwise Highlights]] block.`
           );
@@ -216,11 +216,10 @@ const Sync = (props: {
           );
         }
 
-        console.log(highlightsBlock[0]);
         const lastBlk = highlightsBlock[0].children[
           highlightsBlock[0].children.length - 1
         ] as BlockEntity;
-        console.log(lastBlk);
+
         await logseq.Editor.insertBatchBlock(
           lastBlk.uuid,
           latestHighlightsArr.reverse(),
