@@ -1,33 +1,33 @@
-import '@logseq/libs';
-import './App.css';
-import { bookView } from './services/bookView';
-import { pluginBar } from './services/pluginBar';
-import { getRandomHighlight } from './services/randomHighlightsUtilities';
+import "@logseq/libs";
+import "./App.css";
+import { bookView } from "./services/bookView";
+import { pluginBar } from "./services/pluginBar";
+import { getRandomHighlight } from "./services/randomHighlightsUtilities";
 
 const main = async () => {
-  console.log('Readwise plugin loaded');
+  console.log("Readwise plugin loaded");
 
   if (!logseq.settings.template) {
     logseq.updateSettings({
       template: {
-        customTitle: '%title% (Readwise)',
-        metaData: '',
-        height: '200',
-        width: '200',
-        sectionHeader: '## [[Readwise Highlights]]',
+        customTitle: "%title% (Readwise)",
+        metaData: "",
+        height: "200",
+        width: "200",
+        sectionHeader: "## [[Readwise Highlights]]",
       },
     });
   }
 
   if (!logseq.settings.latestRetrieved) {
     logseq.updateSettings({
-      latestRetrieved: '1970-01-01T00:00:00Z',
+      latestRetrieved: "1970-01-01T00:00:00Z",
     });
   }
 
   if (!logseq.settings.token) {
     logseq.updateSettings({
-      token: '12345',
+      token: "12345",
     });
   }
 
@@ -63,7 +63,7 @@ const main = async () => {
     }
   };
 
-  logseq.Editor.registerSlashCommand('Random highlight', async () => {
+  logseq.Editor.registerSlashCommand("Random highlight", async () => {
     const highlight = await randomHighlight();
 
     await logseq.Editor.insertAtEditingCursor(
@@ -76,9 +76,9 @@ const main = async () => {
   const uniqueIdentifier = () =>
     Math.random()
       .toString(36)
-      .replace(/[^a-z]+/g, '');
+      .replace(/[^a-z]+/g, "");
 
-  logseq.Editor.registerSlashCommand('Book renderer', async () => {
+  logseq.Editor.registerSlashCommand("Book renderer", async () => {
     await logseq.Editor.insertAtEditingCursor(
       `{{renderer :bookRenderer_${uniqueIdentifier()}}}`
     );
