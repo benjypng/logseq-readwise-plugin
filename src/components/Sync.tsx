@@ -75,7 +75,7 @@ const Sync = (props: {
             returnKindleHighlights(
               orgOrMarkdown,
               h.location,
-              h.asin,
+              b.asin,
               h.highlighted_at,
               preferredDateFormat,
               h.tags,
