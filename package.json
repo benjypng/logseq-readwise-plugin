@@ -1,37 +1,51 @@
 {
   "name": "logseq-readwise-plugin",
-  "version": "4.0.17",
-  "author": "hkgnp",
-  "description": "Unofficial Readwise plugin to pull in all your highlights from Readwise and track new ones!",
+  "author": "benjypng",
+  "description": "Unofficial Readwise plugin to pull in all your highlights from Readwise.",
+  "license": "MIT",
   "logseq": {
     "id": "logseq-readwise-plugin",
     "title": "logseq-readwise-plugin",
-    "icon": "./icon.png"
-  },
-  "main": "dist/index.html",
-  "targets": {
-    "main": false
+    "icon": "./icon.png",
+    "main": "dist/index.html"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "parcel src/index.html",
-    "build": "postcss src/tailwind.css -o src/App.css && parcel build src/index.html --public-url ./"
+    "dev": "bunx vite",
+    "build": "bunx vite build",
+    "prepare": "husky",
+    "lint:precommit": "echo \"Running biome\" && bunx biome check . --write && echo \"Running tsc\" && bunx tsc --noEmit"
   },
-  "license": "MIT",
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      [
+        "@semantic-release/github",
+        {
+          "assets": [
+            "logseq-readwise-plugin.zip"
+          ]
+        }
+      ]
+    ]
+  },
   "dependencies": {
-    "@logseq/libs": "^0.0.6",
-    "axios": "^0.24.0",
-    "logseq-dateutils": "^0.0.21",
-    "postcss": "^8.4.13",
-    "postcss-cli": "^9.1.0",
-    "postcss-import": "^14.1.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "tailwindcss": "^3.0.24"
+    "@logseq/libs": "^0.2.11",
+    "date-fns": "^4.1.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "wretch": "^3.0.7"
   },
   "devDependencies": {
-    "@types/react": "17.0.34",
-    "@types/react-dom": "17.0.11",
-    "parcel": "^2.5.0"
+    "@biomejs/biome": "2.3.11",
+    "@types/node": "^25.0.3",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "husky": "^9.1.7",
+    "typescript": "^5.5.4",
+    "vite": "^7.3.0",
+    "vite-plugin-logseq": "^1.1.2",
+    "vite-tsconfig-paths": "^6.0.3"
   }
 }
