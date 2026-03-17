@@ -16,4 +16,11 @@ export const settingsSchema: SettingSchemaDesc[] = [
     description: 'Internal — managed by the plugin. Do not edit manually.',
     default: '',
   },
+  {
+    key: 'propsConfigured',
+    type: 'boolean',
+    title: 'Properties Configured',
+    description: 'Internal — managed by the plugin. Do not edit manually.',
+    default: false,
+  },
 ]

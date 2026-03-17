@@ -1,22 +1,22 @@
 import { ReadwisePageProp } from '../types'
 
-export const setupProps = async () => {
-  const readwisePageProps: ReadwisePageProp[] = [
-    { key: 'rw-id', schema: { type: 'number' } },
-    { key: 'rw-author', schema: { type: 'node', cardinality: 'many' } },
-    { key: 'rw-readable-title', schema: { type: 'default' } },
-    { key: 'rw-category', schema: { type: 'node' } },
-    { key: 'rw-source', schema: { type: 'default' } },
-    { key: 'rw-cover-image', schema: { type: 'url' } },
-    { key: 'rw-unique-url', schema: { type: 'url' } },
-    { key: 'rw-readwise-url', schema: { type: 'url' } },
-    { key: 'rw-source-url', schema: { type: 'url' } },
-    { key: 'rw-external-id', schema: { type: 'default' } },
-    { key: 'rw-asin', schema: { type: 'default' } },
-    { key: 'rw-document-note', schema: { type: 'default' } },
-    { key: 'rw-summary', schema: { type: 'default' } },
-  ]
+const readwisePageProps: ReadwisePageProp[] = [
+  { key: 'rw-id', schema: { type: 'number' } },
+  { key: 'rw-author', schema: { type: 'node', cardinality: 'many' } },
+  { key: 'rw-readable-title', schema: { type: 'default' } },
+  { key: 'rw-category', schema: { type: 'node' } },
+  { key: 'rw-source', schema: { type: 'default' } },
+  { key: 'rw-cover-image', schema: { type: 'url' } },
+  { key: 'rw-unique-url', schema: { type: 'url' } },
+  { key: 'rw-readwise-url', schema: { type: 'url' } },
+  { key: 'rw-source-url', schema: { type: 'url' } },
+  { key: 'rw-external-id', schema: { type: 'default' } },
+  { key: 'rw-asin', schema: { type: 'default' } },
+  { key: 'rw-document-note', schema: { type: 'default' } },
+  { key: 'rw-summary', schema: { type: 'default' } },
+]
 
+export const setupProps = async () => {
   try {
     const loadingMsg = await logseq.UI.showMsg(
       'Setting up schema. Please wait...',
@@ -42,6 +42,8 @@ export const setupProps = async () => {
     for (const { key } of readwisePageProps) {
       await logseq.Editor.addTagProperty('Readwise', key)
     }
+
+    logseq.updateSettings({ propsConfigured: true })
 
     logseq.UI.closeMsg(loadingMsg)
     await logseq.UI.showMsg('Readwise schema setup completed.', 'success')

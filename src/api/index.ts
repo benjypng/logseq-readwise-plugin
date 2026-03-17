@@ -50,34 +50,6 @@ export const createReadwiseClient = (token: string) => {
       return api.url('/export/').query(query).get().json<ExportResponse>()
     },
 
-    exportAllHighlights: async (
-      params: ExportParams = {},
-    ): Promise<ExportResponse> => {
-      const allResults: ExportResponse['results'] = []
-      let cursor: string | null = null
-      let totalCount = 0
-
-      do {
-        const query: Record<string, string | boolean> = {}
-        if (params.updatedAfter) query.updatedAfter = params.updatedAfter
-        if (params.ids) query.ids = params.ids.join(',')
-        if (params.includeDeleted !== undefined)
-          query.includeDeleted = params.includeDeleted
-        if (cursor) query.pageCursor = cursor
-
-        const page = await api
-          .url('/export/')
-          .query(query)
-          .get()
-          .json<ExportResponse>()
-
-        allResults.push(...page.results)
-        totalCount = page.count
-        cursor = page.nextPageCursor
-      } while (cursor)
-
-      return { count: totalCount, nextPageCursor: null, results: allResults }
-    },
   }
 }
 

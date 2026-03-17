@@ -71,3 +71,5 @@ export interface ExportResponse {
   nextPageCursor: string | null
   results: ExportedBook[]
 }
+
+export type SyncStatus = 'idle' | 'fetching' | 'syncing' | 'completed' | 'error'
