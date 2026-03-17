@@ -1,6 +1,6 @@
-import { appendHighlights, upsertBookProperties } from '.'
 import { READWISE_PAGES_QUERY } from '../constants'
 import type { ExportedBook } from '../types'
+import { appendHighlights, upsertBookProperties } from '.'
 
 export const buildBookIdToPageMap = async (): Promise<Map<number, string>> => {
   const results = await logseq.DB.datascriptQuery(READWISE_PAGES_QUERY)

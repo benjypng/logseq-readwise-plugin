@@ -1,9 +1,10 @@
 import '@logseq/libs'
+
 import { createRoot } from 'react-dom/client'
 
-import { settingsSchema } from './settings'
-import { setupProps } from './services'
 import { ReadwiseContainer } from './components'
+import { setupProps } from './services'
+import { settingsSchema } from './settings'
 
 const main = async () => {
   logseq.UI.showMsg('logseq-readwise-plugin loaded')

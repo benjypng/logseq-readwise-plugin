@@ -49,7 +49,6 @@ export const createReadwiseClient = (token: string) => {
 
       return api.url('/export/').query(query).get().json<ExportResponse>()
     },
-
   }
 }
 
