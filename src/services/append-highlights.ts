@@ -8,7 +8,8 @@ export const appendHighlights = async (
   const existingTexts = new Set(pageBlocks?.map((b) => b.content) ?? [])
 
   for (const highlight of highlights) {
-    const content = `${highlight.text} ([Location](${highlight.readwise_url}))`
+    const text = highlight.text.replace(/#(\w+)/g, '[[$1]]')
+    const content = `${text} ([Location](${highlight.readwise_url}))`
     if (existingTexts.has(content)) continue
     await logseq.Editor.appendBlockInPage(pageUuid, content)
   }
