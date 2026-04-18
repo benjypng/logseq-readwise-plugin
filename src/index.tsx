@@ -3,7 +3,7 @@ import '@logseq/libs'
 import { createRoot } from 'react-dom/client'
 
 import { ReadwiseContainer } from './components'
-import { setupProps } from './services'
+import { resetSyncTimestamp, setupProps } from './services'
 import { settingsSchema } from './settings'
 
 const main = async () => {
@@ -38,10 +38,7 @@ const main = async () => {
       key: 'readwise:sync',
       label: 'Readwise: Reset sync timestamp',
     },
-    () =>
-      logseq.updateSettings({
-        lastSyncTimestamp: '',
-      }),
+    async () => await resetSyncTimestamp(),
   )
 }
 

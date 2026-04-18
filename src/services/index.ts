@@ -1,4 +1,5 @@
 export * from './append-highlights'
 export * from './setup-properties'
 export * from './sync-highlights'
+export * from './sync-timestamp'
 export * from './upsert-book-props'
