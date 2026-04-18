@@ -10,13 +10,6 @@ export const settingsSchema: SettingSchemaDesc[] = [
     default: '',
   },
   {
-    key: 'lastSyncTimestamp',
-    type: 'string',
-    title: 'Last Sync Timestamp',
-    description: 'Internal — managed by the plugin. Do not edit manually.',
-    default: '',
-  },
-  {
     key: 'propsConfigured',
     type: 'boolean',
     title: 'Properties Configured',

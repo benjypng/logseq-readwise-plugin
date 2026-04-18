@@ -5,6 +5,10 @@ import { useRef, useState } from 'react'
 import { createReadwiseClient } from '../api'
 import { setupProps } from '../services/setup-properties'
 import { buildBookIdToPageMap, syncBook } from '../services/sync-highlights'
+import {
+  appendSyncTimestamp,
+  getLastSyncTimestamp,
+} from '../services/sync-timestamp'
 import type {
   ExportedBook,
   ExportParams,
@@ -53,8 +57,7 @@ export const ReadwiseContainer = () => {
     const client = createReadwiseClient(token)
     const allBooks: ExportedBook[] = []
     let cursor: string | null = null
-    const updatedAfter =
-      (logseq.settings?.lastSyncTimestamp as string) || undefined
+    const updatedAfter = await getLastSyncTimestamp()
 
     try {
       do {
@@ -97,7 +100,7 @@ export const ReadwiseContainer = () => {
         }
       }
 
-      logseq.updateSettings({ lastSyncTimestamp: new Date().toISOString() })
+      await appendSyncTimestamp()
       setStatus('completed')
       setStatusMessage(`Sync complete. ${allBooks.length} book(s) processed.`)
     } catch (err: unknown) {
