@@ -10,9 +10,10 @@ export const upsertBookProperties = async (
       .split(',')
       .map((a) => a.trim())
       .filter(Boolean)
-    for (const author of authors) {
-      await logseq.Editor.createPage(author, {}, { redirect: false })
-      await logseq.Editor.upsertBlockProperty(pageUuid, 'rw-author', author)
+    if (authors.length > 0) {
+      await logseq.Editor.upsertBlockProperty(pageUuid, 'rw-author', authors, {
+        reset: true,
+      })
     }
   }
   if (book.readable_title) {

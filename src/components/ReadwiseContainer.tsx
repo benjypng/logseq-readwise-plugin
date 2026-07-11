@@ -9,6 +9,7 @@ import {
   appendSyncTimestamp,
   getLastSyncTimestamp,
 } from '../services/sync-timestamp'
+import { getMissingSetupItems } from '../services/verify-properties'
 import type {
   ExportedBook,
   ExportParams,
@@ -18,17 +19,25 @@ import type {
 
 export const ReadwiseContainer = () => {
   const cancelledRef = useRef(false)
+  const syncingRef = useRef(false)
   const [status, setStatus] = useState<SyncStatus>('idle')
   const [current, setCurrent] = useState(0)
   const [total, setTotal] = useState(0)
   const [currentBook, setCurrentBook] = useState('')
   const [statusMessage, setStatusMessage] = useState('')
+  const [needsSetup, setNeedsSetup] = useState(false)
   const [errors, setErrors] = useState<{ book: string; message: string }[]>([])
 
   const propsReady = !!logseq.settings?.propsConfigured
 
   const handleSetupProps = async () => {
     await setupProps()
+    const missing = await getMissingSetupItems()
+    if (missing.length === 0) {
+      setNeedsSetup(false)
+      setStatus('idle')
+      setStatusMessage('Properties set up. Ready to sync.')
+    }
   }
 
   const handleCancel = () => {
@@ -39,6 +48,27 @@ export const ReadwiseContainer = () => {
   }
 
   const handleSync = async () => {
+    if (syncingRef.current) return
+    syncingRef.current = true
+    try {
+      await runSync()
+    } finally {
+      syncingRef.current = false
+    }
+  }
+
+  const runSync = async () => {
+    const missing = await getMissingSetupItems()
+    if (missing.length > 0) {
+      setNeedsSetup(true)
+      setStatus('error')
+      setStatusMessage(
+        `Readwise properties are not set up in this graph (missing: ${missing.join(', ')}). Click "Setup Properties" before syncing.`,
+      )
+      return
+    }
+    setNeedsSetup(false)
+
     const token = logseq.settings?.apiToken as string
     if (!token) {
       setStatus('error')
@@ -128,7 +158,7 @@ export const ReadwiseContainer = () => {
         </div>
 
         <div className="rw-body">
-          {!propsReady && status === 'idle' && (
+          {((!propsReady && status === 'idle') || needsSetup) && (
             <div className="rw-setup-notice">
               Properties must be set up before syncing. Click the button below
               to configure them.
@@ -175,7 +205,7 @@ export const ReadwiseContainer = () => {
         </div>
 
         <div className="rw-actions">
-          {!propsReady && status === 'idle' && (
+          {((!propsReady && status === 'idle') || needsSetup) && (
             <button
               className="rw-btn rw-btn-primary"
               onClick={handleSetupProps}
@@ -183,7 +213,7 @@ export const ReadwiseContainer = () => {
               Setup Properties
             </button>
           )}
-          {propsReady && status === 'idle' && (
+          {propsReady && status === 'idle' && !needsSetup && (
             <button className="rw-btn rw-btn-primary" onClick={handleSync}>
               Start Sync
             </button>
@@ -198,7 +228,7 @@ export const ReadwiseContainer = () => {
               Sync Again
             </button>
           )}
-          {status === 'error' && (
+          {status === 'error' && !needsSetup && (
             <button className="rw-btn rw-btn-primary" onClick={handleSync}>
               Retry
             </button>
