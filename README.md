@@ -22,10 +22,6 @@
 - **Logseq DB graphs.** The plugin uses the DB version's tag and property APIs (tag classes, typed properties, node references) and will not work on file-based graphs.
 - A [Readwise](https://readwise.io) account and access token.
 
-## 📸 Screenshots / Demo
-
-![](./screenshots/sync.png)
-
 ## ⚙️ Installation
 
 1. Open Logseq.
